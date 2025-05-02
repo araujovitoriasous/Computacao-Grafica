@@ -8,11 +8,17 @@ using namespace std;
 double PI = 3.14159;
 int frameNumber = 0;
 int frameIncialObjeto = 0;
-int quadrado_azul_X0;
-int quadrado_azul_X1;
+int lago_X0=-1;
+int lago_X1=7;
 int quadrado_verde_X0;
-int quadrado_verde_X1;
-//bool noLago = false;
+int quadrado_verde_X1=-1;
+int cronometroPinguimFilhote = 0;
+// bool noLago = false;
+#pragma endregion
+
+#pragma region Variaveis Petrel
+bool direcao_esquerda = false;
+int framePetrel = 0;
 #pragma endregion
 
 #pragma region Variaveis Peixes
@@ -95,7 +101,6 @@ bool Troca_Direita(double pos, int i)
 {
   if (pos <= -0.5)
   {
-    // cout <<"oi"<<endl;
     direita[i] = true;
     esquerda[i] = false;
     dxPeixe[i] = 0;
@@ -130,6 +135,39 @@ void init(void)
 double funcao_peixe(double x)
 {
   return 0.3 * x * x - 1;
+}
+
+double funcao_petrel_esquerda(double x)
+{
+  return -x * x - 2 * x;
+}
+
+double funcao_petrel_direita(double x)
+{
+  return -x * x + 2 * x;
+}
+
+void petrel()
+{
+
+  glPushMatrix();
+  glLineWidth(5);
+  glBegin(GL_LINES);
+  glColor3f(1, 0.4353, 0.6118);
+  for (double i = 1.2; i >= 0.01; i = i - 0.01)
+  {
+    glVertex3f(i - 0.01, funcao_petrel_direita(i), 0);
+    glVertex3f(i, funcao_petrel_direita(i), 0);
+  }
+  glEnd();
+  glBegin(GL_LINES);
+  for (double i = 0.01; i >= -1.2; i = i - 0.01)
+  {
+    glVertex3f(i - 0.01, funcao_petrel_esquerda(i), 0);
+    glVertex3f(i, funcao_petrel_esquerda(i), 0);
+  }
+  glEnd();
+  glPopMatrix();
 }
 
 void square()
@@ -380,7 +418,7 @@ bool PINGUIM_NO_LAGO_FRENTE()
 
     if ((-7.5 + dx * 0.5 >= -1 && -7.5 + dx * 0.5 <= 5) && (0.1 + dy * 0.25 >= -5.8 && 0.1 + dy * 0.25 <= 0.1))
     {
-      //noLago = true;
+      // noLago = true;
       dxAnterior = dx;
       dyAnterior = dy;
       return true;
@@ -399,7 +437,7 @@ bool PINGUIM_NO_LAGO_TRAS()
   {
     if ((-5.6 + dx * 0.5 >= 0 && -5.6 + dx * 0.5 <= 7) && (-1.1 + dy * 0.25 >= -7 && -1.1 + dy * 0.25 <= -1))
     {
-      
+
       dxAnterior = dx;
       dyAnterior = dy;
       // cout << "Dentro" << endl;
@@ -408,7 +446,7 @@ bool PINGUIM_NO_LAGO_TRAS()
 
     if ((-5.6 + dx * 0.5 < -1) && (-5.6 + dx * 0.5 > -0.3) && (-1.1 + dy * 0.25 == -1.1))
     {
-   
+
       dxAnterior = dx;
       dyAnterior = dy;
       // cout << "Saiu" << endl;
@@ -417,21 +455,22 @@ bool PINGUIM_NO_LAGO_TRAS()
 
     if ((-5.6 + dx * 0.5 < 0) && (-1.1 + dy * 0.25 == -1.1))
     {
-      
+
       return false;
     }
-    if ((-7.5 + dx * 0.5 <= -2) && ((-1.1 + dyAnterior * 0.25 == -1.1))){
-      //cout <<"oi111"<<endl;
+    if ((-7.5 + dx * 0.5 <= -2) && ((-1.1 + dyAnterior * 0.25 == -1.1)))
+    {
+      // cout <<"oi111"<<endl;
       return false;
     }
 
-    //cout <<-7.5 + dx * 0.5 <<endl;
-    //cout <<-1.1 + dy * 0.25<<endl;
+    // cout <<-7.5 + dx * 0.5 <<endl;
+    // cout <<-1.1 + dy * 0.25<<endl;
     dx = dxAnterior;
     dy = dyAnterior;
     return true;
   }
-  
+
   return false;
 }
 
@@ -439,8 +478,8 @@ bool PINGUIM_NO_VERDE()
 {
   if (-7.5 + dx * 0.5 < -1 && -7.5 + dx * 0.5 >= -7.5)
   {
-    //cout <<"oi222"<<endl;
-    //noLago = false;
+    // cout <<"oi222"<<endl;
+    // noLago = false;
     dy = 0;
     dyAnterior = 0;
     dxAnterior = dx;
@@ -449,12 +488,12 @@ bool PINGUIM_NO_VERDE()
 
   if (-7.5 + dx * 0.5 <= -7.5)
   {
-    //noLago = false;
+    // noLago = false;
     dy = dyAnterior;
     dx = dxAnterior;
     return true;
   }
-  //cout <<"oi222"<<endl;
+  // cout <<"oi222"<<endl;
   return false;
 }
 
@@ -476,7 +515,7 @@ void CapturaPeixe(int i)
       // cout << (cabecaPinguim<=cabeçaPeixe) <<endl;
       if (testeCapturaTras())
       {
-        //cout << cabecaPinguim << " " << cabeçaPeixe << endl;
+        // cout << cabecaPinguim << " " << cabeçaPeixe << endl;
         peixeCapturado[i] = true;
         pegouPeixe = true;
       }
@@ -487,7 +526,7 @@ void CapturaPeixe(int i)
 void display()
 {
 
-  if (frameNumber <= 15000)
+  if (frameNumber <= 15000 && (cronometroPinguimFilhote <= 3000))
   {
     // Limpa a janela, colocando na tela a cor definida pela função glClearColor
     glClear(GL_COLOR_BUFFER_BIT);
@@ -651,7 +690,7 @@ void display()
     {
       glPushMatrix();
       glTranslated(-7.5 + dx * 0.5, 0.1, 0);
-      //glScaled(0.6, 0.8, 1);
+      // glScaled(0.6, 0.8, 1);
 
       if (PINGUIM_FRENTE())
       {
@@ -676,7 +715,7 @@ void display()
         glScaled(0.6, 0.8, 1);
         Pinguim_Contrario();
         glPopMatrix();
-        //Pinguim_Contrario();
+        // Pinguim_Contrario();
         if (pegouPeixe)
         {
           glPushMatrix();
@@ -698,7 +737,7 @@ void display()
       glTranslated(-7 + dx * 0.5, 0.1 + dy * 0.25, 0);
       glRotated(-90, 0, 0, 1);
       glTranslated(0, 0, 0);
-      
+
       glPushMatrix();
       glScaled(0.6, 0.8, 1);
       Pinguim();
@@ -737,7 +776,7 @@ void display()
     }
     else
     {
-      //cout <<"("<<-7.5+dx*0.5<<","<<-1.1+dy*0.25<< ")"<<endl;
+      // cout <<"("<<-7.5+dx*0.5<<","<<-1.1+dy*0.25<< ")"<<endl;
       posicaoPinguimX = -5.6 + dx * 0.5;
       posicaoPinguimY = -1.1 + dy * 0.25;
       glPushMatrix();
@@ -784,29 +823,61 @@ void display()
     Pinguim_Filhote();
     glPopMatrix();
 
-    if (pegouPeixe && -7.5 + dx * 0.5 <= -7.5)
+    if (pegouPeixe && -7.5 + dx * 0.5 <= -7)
     {
+      cronometroPinguimFilhote = 0;
       pegouPeixe = false;
     }
 
-    // glPushMatrix();
-    // glPointSize(5);
-    // glBegin(GL_POINTS);
-    // glColor3f(1, 0, 0);
-    // glVertex3f(-7.5 + dx * 0.5, -0.5+dy*0.25, 0);
-    // glPointSize(5);
-    // glColor3f(0, 1, 0);
-    // glVertex3f(-5.6 + dx * 0.5, -0.5+dy*0.25, 0);
-    // glColor3f(0, 0, 1);
-    // glVertex3f(-1, 0.1, 0);
-    // glColor3f(0, 0, 1);
-    // glVertex3f(7, 0.1, 0);
-    // glColor3f(1,0,0);
-    // glVertex3f(-6.6+dx*0.5, -0.85 + dy*0.25, 0);
-    // glColor3f(1,0,0);
-    // glVertex3f(-6.6+dx*0.5, -0.1 + dy*0.25, 0);
-    // glEnd();
-    // glPopMatrix();
+    glPushMatrix();
+    if (!direcao_esquerda)
+    {
+      if (-6.5 + framePetrel * 0.1 <= 7)
+      {
+        glTranslated(-7 + framePetrel * 0.1, 3, 0);
+      }
+      else
+      {
+        direcao_esquerda = true;
+        framePetrel = 0;
+        glTranslated(7 - framePetrel * 0.1, 3, 0);
+      }
+    }
+    else
+    {
+      if (6.5 - framePetrel * 0.1 >= -7)
+      {
+        glTranslated(7 - framePetrel * 0.1, 3, 0);
+      }
+      else
+      {
+        direcao_esquerda = false;
+        framePetrel = 0;
+        glTranslated(-7 + framePetrel * 0.1, 3, 0);
+      }
+    }
+    glScaled(0.8, 0.8, 1);
+    petrel();
+    glPopMatrix();
+
+    glPushMatrix();
+    glPointSize(5);
+
+    glBegin(GL_POINTS);
+    
+    glColor3f(1, 0, 0);
+    glVertex3f(-8,0,0);
+    glPointSize(5);
+    
+
+    glColor3f(0, 0, 1);
+    glVertex3f(-1,0,0);
+
+    glColor3f(0, 0, 1);
+    glVertex3f(7,0,0);
+
+    glEnd();
+    glPopMatrix();
     // Libera o buffer de comando de desenho para fazer o desenho acontecer o mais rápido possível.
     glFlush();
   }
@@ -819,6 +890,8 @@ void display()
 void Frame(int v)
 {
   frameNumber++;
+  framePetrel++;
+  cronometroPinguimFilhote++;
   display();
   glutTimerFunc(20, Frame, 0);
 }
@@ -826,21 +899,14 @@ void Frame(int v)
 int main(int argc, char **argv)
 {
   glutInit(&argc, argv);
-
   glutInitDisplayMode(GLUT_RGB | GLUT_SINGLE);
-
   glutInitWindowSize(800, 800);
   glutInitWindowPosition(0, 0);
-
   glutCreateWindow("Alimente o Pinguim Filhote");
-
   init();
-
   glutDisplayFunc(display);
   glutTimerFunc(20, Frame, 0);
   glutKeyboardFunc(Teclado);
-
   glutMainLoop();
-
   return 0;
 }
