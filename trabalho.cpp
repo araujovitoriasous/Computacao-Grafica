@@ -48,9 +48,12 @@ double cabecaPinguim;
 double pataPinguim;
 double barrigaPinguim;
 double costaPinguim;
-double posicaoPinguimX;
-double posicaoPinguimY;
 bool pegouPeixe = false;
+double posicao_inicial_pinguimX=-6.9;
+double posicao_inicial_pinguimY=0.1;
+double barrigaPinguim_Inicial = -6.6;
+double posicaoPinguimX=posicao_inicial_pinguimX;
+double posicaoPinguimY=posicao_inicial_pinguimY;
 #pragma endregion
 
 bool testeCapturaFrente()
@@ -207,7 +210,7 @@ void Pinguim()
 
   // BICO
   glPushMatrix();
-  glTranslated(1.45, 1.3, 0);
+  glTranslated(0.45, 1.3, 0);
   glScaled(0.3, 0.1, 1);
   glColor3f(1, 1, 0);
   glRotated(110, 0, 0, 1);
@@ -216,7 +219,7 @@ void Pinguim()
 
   // CABEÇA
   glPushMatrix();
-  glTranslated(1, 1.5, 0);
+  glTranslated(0, 1.5, 0);
   glScaled(0.35, 0.35, 1);
   glColor3f(0, 0, 0);
   Disk(1);
@@ -224,7 +227,7 @@ void Pinguim()
 
   // CORPO
   glPushMatrix();
-  glTranslated(1, 0.4, 0);
+  glTranslated(0, 0.4, 0);
   glScaled(0.5, 0.8, 1);
   glColor3f(0, 0, 0);
   Disk(1);
@@ -232,7 +235,7 @@ void Pinguim()
 
   // PELO BRANCO
   glPushMatrix();
-  glTranslated(1.25, 0.45, 0);
+  glTranslated(0.25, 0.45, 0);
   glScaled(0.2, 0.55, 1);
   glColor3f(1, 1, 1);
   Disk(1);
@@ -240,7 +243,7 @@ void Pinguim()
 
   // OLHO
   glPushMatrix();
-  glTranslated(1.2, 1.5, 0);
+  glTranslated(0.2, 1.5, 0);
   glScaled(0.1, 0.1, 1);
   glColor3f(1, 1, 1);
   Disk(1);
@@ -248,7 +251,7 @@ void Pinguim()
 
   // PATA1
   glPushMatrix();
-  glTranslated(0.8, -0.7, 0);
+  glTranslated(-0.2, -0.7, 0);
   glScaled(0.1, 0.3, 1);
   glColor3f(0.702, 0.1294, 0.2039);
   triangle();
@@ -256,7 +259,7 @@ void Pinguim()
 
   // PATA2
   glPushMatrix();
-  glTranslated(1.2, -0.7, 0);
+  glTranslated(0.2, -0.7, 0);
   glScaled(0.1, 0.3, 1);
   glColor3f(0.702, 0.1294, 0.2039);
   triangle();
@@ -268,7 +271,7 @@ void Pinguim_Contrario()
 
   // BICO
   glPushMatrix();
-  glTranslated(0.55, 1.3, 0);
+  glTranslated(-0.45, 1.3, 0);
   glScaled(0.3, 0.1, 1);
   glColor3f(1, 1, 0);
   glRotated(-110, 0, 0, 1);
@@ -277,7 +280,7 @@ void Pinguim_Contrario()
 
   // CABEÇA
   glPushMatrix();
-  glTranslated(1, 1.5, 0);
+  glTranslated(0, 1.5, 0);
   glScaled(0.35, 0.35, 1);
   glColor3f(0, 0, 0);
   Disk(1);
@@ -285,7 +288,7 @@ void Pinguim_Contrario()
 
   // CORPO
   glPushMatrix();
-  glTranslated(1, 0.4, 0);
+  glTranslated(0, 0.4, 0);
   glScaled(0.5, 0.8, 1);
   glColor3f(0, 0, 0);
   Disk(1);
@@ -293,7 +296,7 @@ void Pinguim_Contrario()
 
   // PELO BRANCO
   glPushMatrix();
-  glTranslated(0.75, 0.45, 0);
+  glTranslated(-0.25, 0.45, 0);
   glScaled(0.2, 0.55, 1);
   glColor3f(1, 1, 1);
   Disk(1);
@@ -301,7 +304,7 @@ void Pinguim_Contrario()
 
   // OLHO
   glPushMatrix();
-  glTranslated(0.8, 1.5, 0);
+  glTranslated(-0.2, 1.5, 0);
   glScaled(0.1, 0.1, 1);
   glColor3f(1, 1, 1);
   Disk(1);
@@ -309,7 +312,7 @@ void Pinguim_Contrario()
 
   // PATA1
   glPushMatrix();
-  glTranslated(0.8, -0.7, 0);
+  glTranslated(0.2, -0.7, 0);
   glScaled(0.1, 0.3, 1);
   glColor3f(0.702, 0.1294, 0.2039);
   triangle();
@@ -317,7 +320,7 @@ void Pinguim_Contrario()
 
   // PATA2
   glPushMatrix();
-  glTranslated(1.2, -0.7, 0);
+  glTranslated(-0.2, -0.7, 0);
   glScaled(0.1, 0.3, 1);
   glColor3f(0.702, 0.1294, 0.2039);
   triangle();
@@ -478,7 +481,7 @@ bool PINGUIM_NO_LAGO_TRAS()
 
 bool PINGUIM_NO_VERDE()
 {
-  if ((-7.5 + dx * 0.5 < -1 && -7.5 + dx * 0.5 >= -7.5) && (dy==0))
+  if ((-7.5 + dx * 0.5 < -1 &&-7.5  + dx * 0.5 >= -7.5) && (dy == 0))
   {
     // cout <<"oi222"<<endl;
     // noLago = false;
@@ -680,26 +683,24 @@ void display()
 
     if (!PINGUIM_NO_LAGO_TRAS() && PINGUIM_NO_VERDE())
     {
+      posicaoPinguimX = posicao_inicial_pinguimX + dx * 0.5;
+      posicaoPinguimY = posicao_inicial_pinguimY;
       glPushMatrix();
-      glTranslated(-7.5 + dx * 0.5, 0.1, 0);
-      posicaoPinguimX = -6.9 + dx * 0.5;
-      posicaoPinguimY = 0.5;
+      glTranslated(posicaoPinguimX,posicaoPinguimY, 0);
+
       // glScaled(0.6, 0.8, 1);
 
       if (PINGUIM_FRENTE())
       {
         barrigaPinguim = posicaoPinguimX + 0.3;
-        pataPinguim = posicaoPinguimY-1;
-        cabecaPinguim = posicaoPinguimY +1;
+        pataPinguim = posicaoPinguimY-0.6;
+        cabecaPinguim = posicaoPinguimY +1.5;
         costaPinguim = posicaoPinguimX - 0.3;
-        glPushMatrix();
-        glScaled(0.6, 0.8, 1);
-        Pinguim();
-        glPopMatrix();
+
         if (pegouPeixe)
         {
           glPushMatrix();
-          glTranslated(1.2, 0.8, 0);
+          glTranslated(0.5, 0.8, 0);
           glRotated(-45, 0, 0, 1);
           glScaled(0.2, 0.2, 1);
           glColor3f(1, 0.549, 0);
@@ -707,28 +708,35 @@ void display()
           glPopMatrix();
         }
 
+        glPushMatrix();
+        glScaled(0.6, 0.8, 1);
+        Pinguim();
+        glPopMatrix();
+
       }
       else
       {
         barrigaPinguim = posicaoPinguimX - 0.3;
-        pataPinguim = posicaoPinguimY-1;
-        cabecaPinguim = posicaoPinguimY +1;
+        pataPinguim = posicaoPinguimY-0.6;
+        cabecaPinguim = posicaoPinguimY +1.5;
         costaPinguim = posicaoPinguimX + 0.3;
-        glPushMatrix();
-        glScaled(0.6, 0.8, 1);
-        Pinguim_Contrario();
-        glPopMatrix();
-        // Pinguim_Contrario();
+
         if (pegouPeixe)
         {
           glPushMatrix();
-          glTranslated(0, 0.8, 0);
+          glTranslated(-0.5, 0.8, 0);
           glRotated(225, 0, 0, 1);
           glScaled(0.2, 0.2, 1);
           glColor3f(1, 0.549, 0);
           Peixe();
           glPopMatrix();
         }
+
+        glPushMatrix();
+        glScaled(0.6, 0.8, 1);
+        Pinguim_Contrario();
+        glPopMatrix();
+        // Pinguim_Contrario();
       }
       glPopMatrix();
 
@@ -765,7 +773,7 @@ void display()
       costaPinguim = posicaoPinguimY + 0.4;
 
       glPushMatrix();
-      glTranslated(-7 + dx * 0.5, 0.1 + dy * 0.25, 0);
+      glTranslated(-7 + dx * 0.5, -0.5 + dy * 0.25, 0);
       glRotated(-90, 0, 0, 1);
       glTranslated(0, 0, 0);
 
@@ -808,13 +816,13 @@ void display()
     {
       // cout <<"("<<-7.5+dx*0.5<<","<<-1.1+dy*0.25<< ")"<<endl;
       posicaoPinguimX = -5.6 + dx * 0.5 -0.4;
-      posicaoPinguimY = 0.1 + dy * 0.25 - 0.6;
+      posicaoPinguimY = -0.5 + dy * 0.25;
       cabecaPinguim = posicaoPinguimX - 1;
       pataPinguim = posicaoPinguimX + 1;
       barrigaPinguim = posicaoPinguimY - 0.4;
       costaPinguim = posicaoPinguimY + 0.4;
       glPushMatrix();
-      glTranslated(-5.6 + dx * 0.5, -1.1 + dy * 0.25, 0);
+      glTranslated(-5.6 + dx * 0.5, -0.5 + dy * 0.25, 0);
       glRotated(90, 0, 0, 1);
       glTranslated(0, 0, 0);
       glPushMatrix();
@@ -898,19 +906,28 @@ void display()
 
     glBegin(GL_POINTS);
     
-    glColor3f(1, 0, 0);
+    glColor3f(0, 0, 1);
     glVertex3f(-8,0,0);
     glPointSize(5);
     
+    glColor3f(1, 0, 0);
+    glVertex3f(-7.5,0,0);
+    glPointSize(5);
 
     glColor3f(0, 0, 1);
     glVertex3f(-1,0,0);
 
     glColor3f(0, 0, 1);
     glVertex3f(7,0,0);
-
+    
+    glColor3f(0, 0, 1);
+    glVertex3f(0,0,0);
     glEnd();
     glPopMatrix();
+
+    glPopMatrix();
+
+
     // Libera o buffer de comando de desenho para fazer o desenho acontecer o mais rápido possível.
     glFlush();
   }
