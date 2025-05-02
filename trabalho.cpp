@@ -7,12 +7,14 @@ using namespace std;
 #pragma region Variaveis Globais
 double PI = 3.14159;
 int frameNumber = 0;
-int frameIncialObjeto = 0;
+int cronometroPinguimFilhote = 0;
 int lago_X0=-1;
 int lago_X1=7;
-int quadrado_verde_X0;
+int quadrado_verde_X0=-8;
 int quadrado_verde_X1=-1;
-int cronometroPinguimFilhote = 0;
+double velocidade_pinguim=0.05;
+double velocidade_peixe=0.002;
+double velocidade_petrel = 0.01;
 // bool noLago = false;
 #pragma endregion
 
@@ -476,13 +478,13 @@ bool PINGUIM_NO_LAGO_TRAS()
 
 bool PINGUIM_NO_VERDE()
 {
-  if (-7.5 + dx * 0.5 < -1 && -7.5 + dx * 0.5 >= -7.5)
+  if ((-7.5 + dx * 0.5 < -1 && -7.5 + dx * 0.5 >= -7.5) && (dy==0))
   {
     // cout <<"oi222"<<endl;
     // noLago = false;
-    dy = 0;
     dyAnterior = 0;
     dxAnterior = dx;
+    //cout <<"oi222"<<endl;
     return true;
   }
 
@@ -491,15 +493,16 @@ bool PINGUIM_NO_VERDE()
     // noLago = false;
     dy = dyAnterior;
     dx = dxAnterior;
+    //cout <<"oi111"<<endl;
     return true;
   }
-  // cout <<"oi222"<<endl;
+  
   return false;
 }
 
 void CapturaPeixe(int i)
 {
-  if (!pegouPeixe)
+  if (!pegouPeixe && !PINGUIM_NO_VERDE())
   {
     if (PINGUIM_FRENTE())
     {
@@ -591,13 +594,13 @@ void display()
 
         if (!direita[i] && !esquerda[i] && peixeDirecaoInicial[i] && !Troca_Direita(peixeX[i] - dxPeixe[i] * 0.02, i))
         {
+          posicaoPeixeX[i] = peixeX[i] - dxPeixe[i] * 0.02;
           glPushMatrix();
-          glTranslated(peixeX[i] - dxPeixe[i] * 0.02, peixeY[i], 0);
+          glTranslated(posicaoPeixeX[i], peixeY[i], 0);
           glScaled(0.2, 0.2, 1);
           glColor3f(1, 0.549, 0);
           Peixe();
           glPopMatrix();
-          posicaoPeixeX[i] = peixeX[i] - dxPeixe[i] * 0.02;
           cabeçaPeixe = posicaoPeixeX[i] - 0.5;
           caudaPeixe = posicaoPeixeX[i] + 0.5;
           barrigaPeixe = peixeY[i] - 0.2;
@@ -606,14 +609,14 @@ void display()
 
         else if (!direita[i] && !esquerda[i] && !peixeDirecaoInicial[i] && !Troca_Esquerda(peixeX[i] + dxPeixe[i] * 0.02, i))
         {
+          posicaoPeixeX[i] = peixeX[i] + dxPeixe[i] * 0.02;
           glPushMatrix();
-          glTranslated(peixeX[i] + dxPeixe[i] * 0.02, peixeY[i], 0);
+          glTranslated(posicaoPeixeX[i], peixeY[i], 0);
           glScaled(0.2, 0.2, 1);
           glColor3f(1, 0.549, 0);
           glRotated(-180, 0, 0, 1);
           Peixe();
           glPopMatrix();
-          posicaoPeixeX[i] = peixeX[i] + dxPeixe[i] * 0.02;
           cabeçaPeixe = posicaoPeixeX[i] + 0.5;
           caudaPeixe = posicaoPeixeX[i] - 0.5;
           barrigaPeixe = peixeY[i] - 0.2;
@@ -625,64 +628,53 @@ void display()
 
           if (direita[i] && !Troca_Esquerda(-0.5 + dxPeixe[i] * 0.02, i))
           {
-
+            posicaoPeixeX[i] = -0.5 + dxPeixe[i] * 0.02;
             glPushMatrix();
-            glTranslated(-0.5 + dxPeixe[i] * 0.02, peixeY[i], 0);
+            glTranslated(posicaoPeixeX[i], peixeY[i], 0);
             glScaled(0.2, 0.2, 1);
             glColor3f(1, 0.549, 0);
             glRotated(-180, 0, 0, 1);
             Peixe();
             glPopMatrix();
-            posicaoPeixeX[i] = -0.5 + dxPeixe[i] * 0.02;
             cabeçaPeixe = posicaoPeixeX[i] - 0.5;
             caudaPeixe = posicaoPeixeX[i] + 0.5;
             barrigaPeixe = peixeY[i] - 0.2;
             costaPeixe = peixeY[i] + 0.2;
-            // glPushMatrix();
-            // glPointSize(5);
-            // glBegin(GL_POINTS);
-            // glColor3f(0, 1, 0);
-            // glVertex3f(posicaoPeixeX[i] + 0.5, peixeY[i], 0);
-            // glColor3f(1, 0, 0);
-            // glVertex3f(posicaoPeixeX[i] - 0.5, peixeY[i], 0);
-            // glColor3f(1, 0, 0);
-            // glVertex3f(posicaoPeixeX[i], peixeY[i] + 0.2, 0);
-            // glColor3f(1, 0, 0);
-            // glVertex3f(posicaoPeixeX[i], peixeY[i] - 0.2, 0);
-            // glEnd();
-            // glPopMatrix();
-            // CapturaPeixe(i);
+       
           }
           else if (esquerda[i] && !Troca_Direita(6.5 - dxPeixe[i] * 0.02, i))
           {
+            posicaoPeixeX[i] = 6.5 - dxPeixe[i] * 0.02, peixeY[i], 0;
             glPushMatrix();
-            glTranslated(6.5 - dxPeixe[i] * 0.02, peixeY[i], 0);
+            glTranslated(posicaoPeixeX[i], peixeY[i], 0);
             glScaled(0.2, 0.2, 1);
             glColor3f(1, 0.549, 0);
             Peixe();
             glPopMatrix();
-            posicaoPeixeX[i] = 6.5 - dxPeixe[i] * 0.02, peixeY[i], 0;
             cabeçaPeixe = posicaoPeixeX[i] + 0.5;
             caudaPeixe = posicaoPeixeX[i] - 0.5;
             barrigaPeixe = peixeY[i] - 0.2;
             costaPeixe = peixeY[i] + 0.2;
 
-            // glPushMatrix();
-            // glPointSize(5);
-            // glBegin(GL_POINTS);
-            // glColor3f(1, 0, 0);
-            // glVertex3f(posicaoPeixeX[i] + 0.5, peixeY[i], 0);
-            // glColor3f(0, 1, 0);
-            // glVertex3f(posicaoPeixeX[i] - 0.5, peixeY[i], 0);
-            // glColor3f(1, 0, 0);
-            // glVertex3f(posicaoPeixeX[i], peixeY[i] + 0.2, 0);
-            // glColor3f(1, 0, 0);
-            // glVertex3f(posicaoPeixeX[i], peixeY[i] - 0.2, 0);
-            // glEnd();
-            // glPopMatrix();
           }
         }
       }
+      
+      glPushMatrix();
+      glPointSize(5);
+      glBegin(GL_POINTS);
+      glColor3f(1, 0, 0);
+      glVertex3f(cabeçaPeixe, peixeY[i], 0);
+      glColor3f(0, 1, 0);
+      glVertex3f(caudaPeixe, peixeY[i], 0);
+      glColor3f(1, 0, 0);
+      glVertex3f(posicaoPeixeX[i], costaPeixe, 0);
+      glColor3f(1, 0, 0);
+      glVertex3f(posicaoPeixeX[i], barrigaPeixe, 0);
+      glColor3f(1, 1, 0);
+      glVertex3f(posicaoPeixeX[i], peixeY[i], 0);
+      glEnd();
+      glPopMatrix();
       CapturaPeixe(i);
     }
 
@@ -690,10 +682,16 @@ void display()
     {
       glPushMatrix();
       glTranslated(-7.5 + dx * 0.5, 0.1, 0);
+      posicaoPinguimX = -6.9 + dx * 0.5;
+      posicaoPinguimY = 0.5;
       // glScaled(0.6, 0.8, 1);
 
       if (PINGUIM_FRENTE())
       {
+        barrigaPinguim = posicaoPinguimX + 0.3;
+        pataPinguim = posicaoPinguimY-1;
+        cabecaPinguim = posicaoPinguimY +1;
+        costaPinguim = posicaoPinguimX - 0.3;
         glPushMatrix();
         glScaled(0.6, 0.8, 1);
         Pinguim();
@@ -708,9 +706,14 @@ void display()
           Peixe();
           glPopMatrix();
         }
+
       }
       else
       {
+        barrigaPinguim = posicaoPinguimX - 0.3;
+        pataPinguim = posicaoPinguimY-1;
+        cabecaPinguim = posicaoPinguimY +1;
+        costaPinguim = posicaoPinguimX + 0.3;
         glPushMatrix();
         glScaled(0.6, 0.8, 1);
         Pinguim_Contrario();
@@ -728,11 +731,39 @@ void display()
         }
       }
       glPopMatrix();
+
+      glPushMatrix();
+      glPointSize(5);
+      glBegin(GL_POINTS);
+      glColor3f(1,0,0);
+      glVertex3f(posicaoPinguimX,posicaoPinguimY, 0);
+
+      glPushMatrix();
+      glPointSize(5);
+      glBegin(GL_POINTS);
+      glColor3f(1, 0, 0);
+      glVertex3f(posicaoPinguimX, pataPinguim, 0);
+      glColor3f(0, 1, 0);
+      glVertex3f(posicaoPinguimX, cabecaPinguim, 0);
+      glColor3f(1, 0, 0);
+      glVertex3f(barrigaPinguim, posicaoPinguimY, 0);
+      glColor3f(0, 1, 0);
+      glVertex3f(costaPinguim, posicaoPinguimY, 0);
+      glEnd();
+      glPopMatrix();
+      
+      glEnd();
+      glPopMatrix();
     }
     else if (PINGUIM_NO_LAGO_FRENTE())
     {
-      posicaoPinguimX = -7 + dx * 0.5;
-      posicaoPinguimY = 0.1 + dy * 0.25;
+      posicaoPinguimX = -7 + dx * 0.5 + 0.4;
+      posicaoPinguimY = 0.1 + dy * 0.25 - 0.6;
+      cabecaPinguim = posicaoPinguimX + 1;
+      pataPinguim = posicaoPinguimX - 1;
+      barrigaPinguim = posicaoPinguimY - 0.4;
+      costaPinguim = posicaoPinguimY + 0.4;
+
       glPushMatrix();
       glTranslated(-7 + dx * 0.5, 0.1 + dy * 0.25, 0);
       glRotated(-90, 0, 0, 1);
@@ -755,30 +786,33 @@ void display()
       }
 
       glPopMatrix();
-      cabecaPinguim = posicaoPinguimX + 1.5;
-      pataPinguim = posicaoPinguimX - 0.6;
-      barrigaPinguim = posicaoPinguimY - 0.4 - 0.6;
-      costaPinguim = posicaoPinguimY + 0.4 - 0.6;
 
-      // glPushMatrix();
-      // glPointSize(5);
-      // glBegin(GL_POINTS);
-      // glColor3f(1, 0, 0);
-      // glVertex3f(pataPinguim, posicaoPinguimY - 0.6, 0);
-      // glColor3f(0, 1, 0);
-      // glVertex3f(cabecaPinguim, posicaoPinguimY - 0.6, 0);
-      // glColor3f(1, 0, 0);
-      // glVertex3f(posicaoPinguimX + 0.4, barrigaPinguim, 0);
-      // glColor3f(0, 1, 0);
-      // glVertex3f(posicaoPinguimX + 0.4, costaPinguim, 0);
-      // glEnd();
-      // glPopMatrix();
+      glPushMatrix();
+      glPointSize(5);
+      glBegin(GL_POINTS);
+      glColor3f(1, 0, 0);
+      glVertex3f(pataPinguim, posicaoPinguimY, 0);
+      glColor3f(0, 1, 0);
+      glVertex3f(cabecaPinguim, posicaoPinguimY, 0);
+      glColor3f(1, 0, 0);
+      glVertex3f(posicaoPinguimX, barrigaPinguim, 0);
+      glColor3f(0, 1, 0);
+      glVertex3f(posicaoPinguimX, costaPinguim, 0);
+      glColor3f(1, 1, 0);
+      glVertex3f(posicaoPinguimX, posicaoPinguimY, 0);
+
+      glEnd();
+      glPopMatrix();
     }
     else
     {
       // cout <<"("<<-7.5+dx*0.5<<","<<-1.1+dy*0.25<< ")"<<endl;
-      posicaoPinguimX = -5.6 + dx * 0.5;
-      posicaoPinguimY = -1.1 + dy * 0.25;
+      posicaoPinguimX = -5.6 + dx * 0.5 -0.4;
+      posicaoPinguimY = 0.1 + dy * 0.25 - 0.6;
+      cabecaPinguim = posicaoPinguimX - 1;
+      pataPinguim = posicaoPinguimX + 1;
+      barrigaPinguim = posicaoPinguimY - 0.4;
+      costaPinguim = posicaoPinguimY + 0.4;
       glPushMatrix();
       glTranslated(-5.6 + dx * 0.5, -1.1 + dy * 0.25, 0);
       glRotated(90, 0, 0, 1);
@@ -799,23 +833,22 @@ void display()
         glPopMatrix();
       }
       glPopMatrix();
-      cabecaPinguim = posicaoPinguimX - 1.5;
-      pataPinguim = posicaoPinguimX + 0.6;
-      barrigaPinguim = posicaoPinguimY - 0.4 + 0.6;
-      costaPinguim = posicaoPinguimY + 0.4 + 0.6;
-      // glPushMatrix();
-      // glPointSize(5);
-      // glBegin(GL_POINTS);
-      // glColor3f(1, 0, 0);
-      // glVertex3f(pataPinguim, posicaoPinguimY + 0.6, 0);
-      // glColor3f(0, 1, 0);
-      // glVertex3f(cabecaPinguim, posicaoPinguimY + 0.6, 0);
-      // glColor3f(1, 0, 0);
-      // glVertex3f(posicaoPinguimX - 0.4, barrigaPinguim, 0);
-      // glColor3f(1, 0, 0);
-      // glVertex3f(posicaoPinguimX - 0.4, costaPinguim, 0);
-      // glEnd();
-      // glPopMatrix();
+      glPushMatrix();
+      glPointSize(5);
+      glBegin(GL_POINTS);
+      glColor3f(1, 0, 0);
+      glVertex3f(pataPinguim, posicaoPinguimY, 0);
+      glColor3f(0, 1, 0);
+      glVertex3f(cabecaPinguim, posicaoPinguimY , 0);
+      glColor3f(1, 0, 0);
+      glVertex3f(posicaoPinguimX, barrigaPinguim, 0);
+      glColor3f(1, 0, 0);
+      glVertex3f(posicaoPinguimX, costaPinguim, 0);
+      glColor3f(1, 1, 0);
+      glVertex3f(posicaoPinguimX , posicaoPinguimY, 0);
+      
+      glEnd();
+      glPopMatrix();
     }
 
     glPushMatrix();
