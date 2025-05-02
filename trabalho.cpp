@@ -423,12 +423,13 @@ bool PINGUIM_NO_LAGO_FRENTE()
 
     if ((-7.5 + dx * 0.5 >= -1 && -7.5 + dx * 0.5 <= 5) && (0.1 + dy * 0.25 >= -5.8 && 0.1 + dy * 0.25 <= 0.1))
     {
+      cout <<"erro 2"<<endl;
       // noLago = true;
       dxAnterior = dx;
       dyAnterior = dy;
       return true;
     }
-
+    cout <<"erro 1"<<endl;
     dx = dxAnterior;
     dy = dyAnterior;
     return true;
@@ -777,21 +778,22 @@ void display()
       glRotated(-90, 0, 0, 1);
       glTranslated(0, 0, 0);
 
-      glPushMatrix();
-      glScaled(0.6, 0.8, 1);
-      Pinguim();
-      glPopMatrix();
-
       if (pegouPeixe)
       {
         glPushMatrix();
-        glTranslated(1.2, 0.8, 0);
+        glTranslated(0.5, 0.8, 0);
         glRotated(-45, 0, 0, 1);
         glScaled(0.2, 0.2, 1);
         glColor3f(1, 0.549, 0);
         Peixe();
         glPopMatrix();
       }
+
+      glPushMatrix();
+      glScaled(0.6, 0.8, 1);
+      Pinguim();
+      glPopMatrix();
+
 
       glPopMatrix();
 
@@ -825,21 +827,24 @@ void display()
       glTranslated(-5.6 + dx * 0.5, -0.5 + dy * 0.25, 0);
       glRotated(90, 0, 0, 1);
       glTranslated(0, 0, 0);
-      glPushMatrix();
-      glScaled(0.6, 0.8, 1);
-      Pinguim_Contrario();
-      glPopMatrix();
 
       if (pegouPeixe)
       {
         glPushMatrix();
-        glTranslated(0, 0.8, 0);
+        glTranslated(-0.5, 0.8, 0);
         glRotated(225, 0, 0, 1);
         glScaled(0.2, 0.2, 1);
         glColor3f(1, 0.549, 0);
         Peixe();
         glPopMatrix();
       }
+      
+      glPushMatrix();
+      glScaled(0.6, 0.8, 1);
+      Pinguim_Contrario();
+      glPopMatrix();
+
+
       glPopMatrix();
       glPushMatrix();
       glPointSize(5);
