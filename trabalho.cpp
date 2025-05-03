@@ -474,6 +474,12 @@ bool PINGUIM_NO_LAGO_TRAS()
       return false;
     }
 
+    if ((-7.5 + dx * 0.5 <= -2) && ((-1.1 + dyAnterior * 0.25 == -1.1)))
+    {
+      pinguim_Mergulhou=false;
+      return false;
+    }
+
     cout << "NAO TRATADO" << endl;
     dx = dxAnterior;
     dy = dyAnterior;
