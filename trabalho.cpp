@@ -10,12 +10,12 @@ int _1minuto = 3000;
 double PI = 3.14159;
 int frameNumber = 0;
 int cronometroPinguimFilhote = 0;
-double lago_X0=-1;
-double lago_X1=7;
-double lago_Y0=0.1;
-double lago_Y1=-6.6;
-double verde_X0=-8;
-double verde_X1=-1;
+double lago_X0 = -1;
+double lago_X1 = 7;
+double lago_Y0 = 0.1;
+double lago_Y1 = -6.6;
+double verde_X0 = -8;
+double verde_X1 = -1;
 #pragma endregion
 
 #pragma region Variaveis Petrel
@@ -25,7 +25,7 @@ double velocidade_petrel = 0.1;
 #pragma endregion
 
 #pragma region Variaveis Peixes
-double velocidade_peixe=0.02;
+double velocidade_peixe = 0.02;
 bool peixeCapturado[4] = {true, true, true, true};
 int peixeX[4];
 int peixeY[4];
@@ -53,13 +53,13 @@ double barrigaPinguim;
 double costaPinguim;
 bool pegouPeixe = false;
 double posicao_filhote = -7.5;
-double posicao_inicial_pinguimX=-6.9;
-double posicao_inicial_pinguimY=0.1;
+double posicao_inicial_pinguimX = -6.9;
+double posicao_inicial_pinguimY = 0.1;
 double barrigaPinguim_Inicial = -6.6;
-double posicaoPinguimX=posicao_inicial_pinguimX;
-double posicaoPinguimY=posicao_inicial_pinguimY;
+double posicaoPinguimX = posicao_inicial_pinguimX;
+double posicaoPinguimY = posicao_inicial_pinguimY;
 bool pinguim_Mergulhou = false;
-double velocidade_pinguim=0.5;
+double velocidade_pinguim = 0.5;
 #pragma endregion
 
 bool testeCapturaFrente()
@@ -115,19 +115,19 @@ bool Troca_Direita(double pos, int i)
     direita[i] = true;
     esquerda[i] = false;
     dxPeixe[i] = 0;
-    peixe_virou[i]=true;
+    peixe_virou[i] = true;
   }
   return direita[i];
 }
 
 bool Troca_Esquerda(double pos, int i)
 {
-  if (pos >= lago_X1 -0.5)
+  if (pos >= lago_X1 - 0.5)
   {
     direita[i] = false;
     esquerda[i] = true;
     dxPeixe[i] = 0;
-    peixe_virou[i]=true;
+    peixe_virou[i] = true;
   }
   return esquerda[i];
 }
@@ -422,7 +422,7 @@ bool PINGUIM_NO_LAGO_FRENTE()
 {
   if (PINGUIM_FRENTE())
   {
-    if ((-7.5 + dx * velocidade_pinguim >= lago_X0 && -7.5 + dx * velocidade_pinguim <= lago_X1 -2) && (0.1 + dy * velocidade_pinguim >= lago_Y1 + 0.8 && 0.1 + dy * velocidade_pinguim <=lago_Y0))
+    if ((-7.5 + dx * velocidade_pinguim >= lago_X0 && -7.5 + dx * velocidade_pinguim <= lago_X1 - 2) && (0.1 + dy * velocidade_pinguim >= lago_Y1 + 0.8 && 0.1 + dy * velocidade_pinguim <= lago_Y0))
     {
 
       dxAnterior = dx;
@@ -430,17 +430,17 @@ bool PINGUIM_NO_LAGO_FRENTE()
       return true;
     }
 
-    if ((-7.5 + dx * velocidade_pinguim < lago_X0 && -7.5 + dx * velocidade_pinguim < lago_X1 -2 && 0.1 + dy * velocidade_pinguim >=lago_Y0)){
-      pinguim_Mergulhou=false;
+    if ((-7.5 + dx * velocidade_pinguim < lago_X0 && -7.5 + dx * velocidade_pinguim < lago_X1 - 2 && 0.1 + dy * velocidade_pinguim >= lago_Y0))
+    {
+      pinguim_Mergulhou = false;
       dxAnterior = dx;
-      dy=posicao_inicial_pinguimY;
+      dy = posicao_inicial_pinguimY;
       return false;
     }
-    
+
     dx = dxAnterior;
     dy = dyAnterior;
     return true;
-
   }
   return false;
 }
@@ -462,15 +462,15 @@ bool PINGUIM_NO_LAGO_TRAS()
 
       dxAnterior = dx;
       dyAnterior = dy;
-      pinguim_Mergulhou=false;
+      pinguim_Mergulhou = false;
       cout << "Saiu" << endl;
       return true;
     }
 
     if ((-5.6 + dx * velocidade_pinguim < 0) && (-1.1 + dy * velocidade_pinguim == -1.1))
     {
-      cout <<"oi4444"<<endl;
-      pinguim_Mergulhou=false;
+      cout << "oi4444" << endl;
+      pinguim_Mergulhou = false;
       return false;
     }
 
@@ -485,22 +485,22 @@ bool PINGUIM_NO_LAGO_TRAS()
 
 bool PINGUIM_NO_VERDE()
 {
-  if ((-7.5 + dx * velocidade_pinguim < lago_X0 &&-7.5  + dx * velocidade_pinguim >=  posicao_filhote) && !pinguim_Mergulhou)
+  if ((-7.5 + dx * velocidade_pinguim < lago_X0 && -7.5 + dx * velocidade_pinguim >= posicao_filhote) && !pinguim_Mergulhou)
   {
 
-    dy=0;
+    dy = 0;
     dyAnterior = 0;
     dxAnterior = dx;
     return true;
   }
 
-  if (-7.5 + dx * velocidade_pinguim <=  posicao_filhote)
+  if (-7.5 + dx * velocidade_pinguim <= posicao_filhote)
   {
     dy = dyAnterior;
     dx = dxAnterior;
     return true;
   }
-  
+
   return false;
 }
 
@@ -588,43 +588,44 @@ void display()
         direita[i] = false;
         esquerda[i] = false;
         peixeCapturado[i] = false;
-        peixe_virou[i]=false;
+        peixe_virou[i] = false;
       }
       else
       {
         dxPeixe[i]++;
-        if (!peixe_virou[i]){
-        if (peixeDirecaoInicial[i] && !Troca_Direita(peixeX[i] - dxPeixe[i] * velocidade_peixe, i))
+        if (!peixe_virou[i])
         {
-          posicaoPeixeX[i] = peixeX[i] - dxPeixe[i] * velocidade_peixe;
-          glPushMatrix();
-          glTranslated(posicaoPeixeX[i], peixeY[i], 0);
-          glScaled(0.2, 0.2, 1);
-          glColor3f(1, 0.549, 0);
-          Peixe();
-          glPopMatrix();
-          cabeçaPeixe = posicaoPeixeX[i] - 0.5;
-          caudaPeixe = posicaoPeixeX[i] + 0.5;
-          barrigaPeixe = peixeY[i] - 0.2;
-          costaPeixe = peixeY[i] + 0.2;
-        }
+          if (peixeDirecaoInicial[i] && !Troca_Direita(peixeX[i] - dxPeixe[i] * velocidade_peixe, i))
+          {
+            posicaoPeixeX[i] = peixeX[i] - dxPeixe[i] * velocidade_peixe;
+            glPushMatrix();
+            glTranslated(posicaoPeixeX[i], peixeY[i], 0);
+            glScaled(0.2, 0.2, 1);
+            glColor3f(1, 0.549, 0);
+            Peixe();
+            glPopMatrix();
+            cabeçaPeixe = posicaoPeixeX[i] - 0.5;
+            caudaPeixe = posicaoPeixeX[i] + 0.5;
+            barrigaPeixe = peixeY[i] - 0.2;
+            costaPeixe = peixeY[i] + 0.2;
+          }
 
-        else if (!peixeDirecaoInicial[i] && !Troca_Esquerda(peixeX[i] + dxPeixe[i] * velocidade_peixe, i))
-        {
-          posicaoPeixeX[i] = peixeX[i] + dxPeixe[i] * velocidade_peixe;
-          glPushMatrix();
-          glTranslated(posicaoPeixeX[i], peixeY[i], 0);
-          glScaled(0.2, 0.2, 1);
-          glColor3f(1, 0.549, 0);
-          glRotated(-180, 0, 0, 1);
-          Peixe();
-          glPopMatrix();
-          cabeçaPeixe = posicaoPeixeX[i] + 0.5;
-          caudaPeixe = posicaoPeixeX[i] - 0.5;
-          barrigaPeixe = peixeY[i] - 0.2;
-          costaPeixe = peixeY[i] + 0.2;
+          else if (!peixeDirecaoInicial[i] && !Troca_Esquerda(peixeX[i] + dxPeixe[i] * velocidade_peixe, i))
+          {
+            posicaoPeixeX[i] = peixeX[i] + dxPeixe[i] * velocidade_peixe;
+            glPushMatrix();
+            glTranslated(posicaoPeixeX[i], peixeY[i], 0);
+            glScaled(0.2, 0.2, 1);
+            glColor3f(1, 0.549, 0);
+            glRotated(-180, 0, 0, 1);
+            Peixe();
+            glPopMatrix();
+            cabeçaPeixe = posicaoPeixeX[i] + 0.5;
+            caudaPeixe = posicaoPeixeX[i] - 0.5;
+            barrigaPeixe = peixeY[i] - 0.2;
+            costaPeixe = peixeY[i] + 0.2;
+          }
         }
-      }
         else
         {
           if (direita[i] && !Troca_Esquerda(-0.5 + dxPeixe[i] * velocidade_peixe, i))
@@ -641,7 +642,6 @@ void display()
             caudaPeixe = posicaoPeixeX[i] + 0.5;
             barrigaPeixe = peixeY[i] - 0.2;
             costaPeixe = peixeY[i] + 0.2;
-       
           }
           else if (esquerda[i] && !Troca_Direita(6.5 - dxPeixe[i] * velocidade_peixe, i))
           {
@@ -659,7 +659,7 @@ void display()
           }
         }
       }
-      
+
       CapturaPeixe(i);
     }
 
@@ -669,13 +669,13 @@ void display()
       posicaoPinguimX = posicao_inicial_pinguimX + dx * velocidade_pinguim;
       posicaoPinguimY = posicao_inicial_pinguimY;
       glPushMatrix();
-      glTranslated(posicaoPinguimX,posicaoPinguimY, 0);
+      glTranslated(posicaoPinguimX, posicaoPinguimY, 0);
 
       if (PINGUIM_FRENTE())
       {
         barrigaPinguim = posicaoPinguimX + 0.3;
-        pataPinguim = posicaoPinguimY-0.6;
-        cabecaPinguim = posicaoPinguimY +1.5;
+        pataPinguim = posicaoPinguimY - 0.6;
+        cabecaPinguim = posicaoPinguimY + 1.5;
         costaPinguim = posicaoPinguimX - 0.3;
 
         if (pegouPeixe)
@@ -696,8 +696,8 @@ void display()
       else
       {
         barrigaPinguim = posicaoPinguimX - 0.3;
-        pataPinguim = posicaoPinguimY-0.6;
-        cabecaPinguim = posicaoPinguimY +1.5;
+        pataPinguim = posicaoPinguimY - 0.6;
+        cabecaPinguim = posicaoPinguimY + 1.5;
         costaPinguim = posicaoPinguimX + 0.3;
 
         if (pegouPeixe)
@@ -765,12 +765,11 @@ void display()
       Pinguim();
       glPopMatrix();
 
-
       glPopMatrix();
     }
     else
     {
-      posicaoPinguimX = -5.6 + dx * velocidade_pinguim -0.4;
+      posicaoPinguimX = -5.6 + dx * velocidade_pinguim - 0.4;
       posicaoPinguimY = -0.5 + dy * velocidade_pinguim;
       cabecaPinguim = posicaoPinguimX - 1;
       pataPinguim = posicaoPinguimX + 1;
@@ -791,7 +790,7 @@ void display()
         Peixe();
         glPopMatrix();
       }
-      
+
       glPushMatrix();
       glScaled(0.6, 0.8, 1);
       Pinguim_Contrario();
@@ -835,7 +834,7 @@ void display()
       {
         direcao_esquerda = false;
         framePetrel = 0;
-        glTranslated(-7 + framePetrel *velocidade_petrel, 3, 0);
+        glTranslated(-7 + framePetrel * velocidade_petrel, 3, 0);
       }
     }
     glScaled(0.8, 0.8, 1);
@@ -846,11 +845,11 @@ void display()
     // glPointSize(5);
 
     // glBegin(GL_POINTS);
-    
+
     // glColor3f(0, 0, 1);
     // glVertex3f(-8,0,0);
     // glPointSize(5);
-    
+
     // glColor3f(1, 0, 0);
     // glVertex3f(-7.5,0,0);
     // glPointSize(5);
@@ -860,7 +859,7 @@ void display()
 
     // glColor3f(0, 0, 1);
     // glVertex3f(7,0,0);
-    
+
     // glColor3f(0, 0, 1);
     // glVertex3f(0,0,0);
 
@@ -880,10 +879,10 @@ void display()
 
     glPointSize(5);
     glBegin(GL_POINTS);
-    glColor3f(1,0,0);
-    glVertex3f(barrigaPinguim,posicaoPinguimY, 0);
+    glColor3f(1, 0, 0);
+    glVertex3f(barrigaPinguim, posicaoPinguimY, 0);
     glColor3f(0, 1, 0);
-    glVertex3f(posicaoPinguimY, barrigaPinguim , 0);
+    glVertex3f(posicaoPinguimY, barrigaPinguim, 0);
     glEnd();
 
     // Libera o buffer de comando de desenho para fazer o desenho acontecer o mais rápido possível.
