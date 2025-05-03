@@ -143,19 +143,8 @@ void init(void)
   glOrtho(-8, 8, -8, 8, -8, 8);
 }
 
-double funcao_peixe(double x)
-{
-  return 0.3 * x * x - 1;
-}
-
-double funcao_petrel_esquerda(double x)
-{
-  return -x * x - 2 * x;
-}
-
-double funcao_petrel_direita(double x)
-{
-  return -x * x + 2 * x;
+double funcao_quadratica(double a, double b, double c, double x){
+  return a*x*x + b*x + c;
 }
 
 void petrel()
@@ -166,15 +155,15 @@ void petrel()
   glColor3f(1, 0.4353, 0.6118);
   for (double i = 1.2; i >= 0.01; i = i - 0.01)
   {
-    glVertex3f(i - 0.01, funcao_petrel_direita(i), 0);
-    glVertex3f(i, funcao_petrel_direita(i), 0);
+    glVertex3f(i - 0.01, funcao_quadratica(-1,2,0,i), 0);
+    glVertex3f(i, funcao_quadratica(-1,2,0,i), 0);
   }
   glEnd();
   glBegin(GL_LINES);
   for (double i = 0.01; i >= -1.2; i = i - 0.01)
   {
-    glVertex3f(i - 0.01, funcao_petrel_esquerda(i), 0);
-    glVertex3f(i, funcao_petrel_esquerda(i), 0);
+    glVertex3f(i - 0.01, funcao_quadratica(-1,-2,0,i), 0);
+    glVertex3f(i, funcao_quadratica(-1,-2,0,i), 0);
   }
   glEnd();
   glPopMatrix();
@@ -403,11 +392,11 @@ void Peixe()
   glBegin(GL_LINE_LOOP);
   for (double i = 2.5; i >= -2; i = i - 0.1)
   {
-    glVertex3f(i, funcao_peixe(i), 0);
+    glVertex3f(i, funcao_quadratica(0.3,0,-1,i), 0);
   }
   for (double i = -2; i <= 2.5; i = i + 0.1)
   {
-    glVertex3f(i, -funcao_peixe(i), 0);
+    glVertex3f(i, funcao_quadratica(-0.3,0,1,i), 0);
   }
   glEnd();
   glPopMatrix();
@@ -424,7 +413,6 @@ bool PINGUIM_NO_LAGO_FRENTE()
   {
     if ((-7.5 + dx * velocidade_pinguim >= lago_X0 && -7.5 + dx * velocidade_pinguim <= lago_X1 - 2) && (0.1 + dy * velocidade_pinguim >= lago_Y1 + 0.8 && 0.1 + dy * velocidade_pinguim <= lago_Y0))
     {
-
       dxAnterior = dx;
       dyAnterior = dy;
       return true;
@@ -463,13 +451,13 @@ bool PINGUIM_NO_LAGO_TRAS()
       dxAnterior = dx;
       dyAnterior = dy;
       pinguim_Mergulhou = false;
-      cout << "Saiu" << endl;
+     // cout << "Saiu" << endl;
       return true;
     }
 
     if ((-5.6 + dx * velocidade_pinguim < 0) && (-1.1 + dy * velocidade_pinguim == -1.1))
     {
-      cout << "oi4444" << endl;
+      //cout << "oi4444" << endl;
       pinguim_Mergulhou = false;
       return false;
     }
@@ -480,7 +468,7 @@ bool PINGUIM_NO_LAGO_TRAS()
       return false;
     }
 
-    cout << "NAO TRATADO" << endl;
+    //cout << "NAO TRATADO" << endl;
     dx = dxAnterior;
     dy = dyAnterior;
     return true;
@@ -883,13 +871,13 @@ void display()
 
     glPopMatrix();
 
-    glPointSize(5);
-    glBegin(GL_POINTS);
-    glColor3f(1, 0, 0);
-    glVertex3f(barrigaPinguim, posicaoPinguimY, 0);
-    glColor3f(0, 1, 0);
-    glVertex3f(posicaoPinguimY, barrigaPinguim, 0);
-    glEnd();
+    // glPointSize(5);
+    // glBegin(GL_POINTS);
+    // glColor3f(1, 0, 0);
+    // glVertex3f(barrigaPinguim, posicaoPinguimY, 0);
+    // glColor3f(0, 1, 0);
+    // glVertex3f(posicaoPinguimY, barrigaPinguim, 0);
+    // glEnd();
 
     // Libera o buffer de comando de desenho para fazer o desenho acontecer o mais rápido possível.
     glFlush();
