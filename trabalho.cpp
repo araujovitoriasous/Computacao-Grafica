@@ -1,8 +1,16 @@
+//fazer tela de perdeu
+//contador de peixes na tela
+
 #include <GL/glut.h>
 #include <iostream>
 #include <cmath>
 #include <ctime>
 using namespace std;
+
+double rasante(double a, double h, double k, double x);
+bool PINGUIM_FRENTE();
+bool PINGUIM_NO_LAGO_TRAS();
+bool PINGUIM_NO_VERDE();
 
 #pragma region Variaveis Globais
 int _5minutos = 15000;
@@ -14,8 +22,10 @@ double lago_X0 = -1;
 double lago_X1 = 7;
 double lago_Y0 = 0.1;
 double lago_Y1 = -6.6;
+bool perdeu = false;
 double verde_X0 = -8;
 double verde_X1 = -1;
+int conta_peixes = 0;
 #pragma endregion
 
 #pragma region Variaveis Petrel
@@ -23,7 +33,14 @@ bool direcao_esquerda = false;
 int framePetrel = 0;
 double velocidade_petrel = 0.1;
 double petrel_x = -6.5;
-double petrel_y = 4;
+double petrel_y = 5;
+double altura_rasante;
+double ponto_rasante;
+bool no_rasante = false;
+bool terminou_rasante = true;
+double a, verticeX, verticeY;
+double posX;
+double posY;
 #pragma endregion
 
 #pragma region Variaveis Peixes
@@ -64,9 +81,150 @@ bool pinguim_Mergulhou = false;
 double velocidade_pinguim = 0.5;
 #pragma endregion
 
-bool petrel_fez_razante()
+bool petrel_atinge()
 {
-  return rand() % 100 == 0;
+  if (!PINGUIM_NO_LAGO_TRAS() && PINGUIM_NO_VERDE())
+  {
+    if (PINGUIM_FRENTE())
+    {
+      return posY <= cabecaPinguim && posX >= costaPinguim && posX <= barrigaPinguim;
+    }
+    else
+    {
+      return posY <= cabecaPinguim && posX >= barrigaPinguim && posX <= costaPinguim;
+    }
+  }
+  return false;
+}
+
+void movimento_padrao_petrel()
+{
+  if (!direcao_esquerda)
+  {
+    if (petrel_x + framePetrel * velocidade_petrel <= 7)
+    {
+      posX = petrel_x + framePetrel * velocidade_petrel;
+      posY = petrel_y;
+    }
+    else
+    {
+      petrel_x = 7;
+      framePetrel = 0;
+      posX = petrel_x - framePetrel * velocidade_petrel;
+      posY = petrel_y;
+      direcao_esquerda = true;
+    }
+  }
+  else
+  {
+    if (petrel_x - framePetrel * velocidade_petrel >= -7)
+    {
+      posX = petrel_x - framePetrel * velocidade_petrel;
+      posY = petrel_y;
+    }
+    else
+    {
+      petrel_x = -7;
+      framePetrel = 0;
+      posX = petrel_x + framePetrel * velocidade_petrel;
+      posY = petrel_y;
+      direcao_esquerda = false;
+    }
+  }
+}
+
+void procura_ponto_rasante()
+{
+  if (!direcao_esquerda)
+  {
+    for (double i = -7; i < 7; i = i + 0.1)
+    {
+      if (rasante(a, verticeX, verticeY, i) <= petrel_y)
+      {
+        ponto_rasante = i;
+        return;
+      }
+    }
+  }
+  else
+  {
+    for (double i = 7; i > -7; i = i - 0.1)
+    {
+      if (rasante(a, verticeX, verticeY, i) <= petrel_y)
+      {
+        ponto_rasante = i;
+        return;
+      }
+    }
+  }
+}
+
+bool comecando_rasante()
+{
+  if (no_rasante)
+  {
+    return false;
+  }
+
+  if (rand() % 5 == 0)
+  {
+    no_rasante = true;
+    petrel_x = posX;
+    petrel_y = posY;
+    framePetrel = 0;
+    a = 1;
+    a = (float)rand() / RAND_MAX;
+    if (!direcao_esquerda)
+    {
+      if (petrel_x + 1 >= 7)
+      {
+        no_rasante = false;
+        return false;
+      }
+      do
+      {
+        verticeX = petrel_x + 1 + rand() % 12;
+        verticeY = rand() % 2;
+        altura_rasante = rand() % 6;
+
+      } while (verticeX > 7 || altura_rasante < verticeY + 1 || altura_rasante < 3);
+      procura_ponto_rasante();
+      if (ponto_rasante < petrel_x || rasante(a, verticeX, verticeY, 7) < 2)
+      {
+        verticeX = 0;
+        verticeY = 0;
+        altura_rasante = 0;
+        no_rasante = false;
+        return false;
+      }
+    }
+    else
+    {
+      if (petrel_x - 1 <= -7)
+      {
+        no_rasante = false;
+        return false;
+      }
+      do
+      {
+        verticeX = petrel_x - 1 - rand() % 12;
+        verticeY = rand() % 2;
+        altura_rasante = rand() % 6;
+      } while (verticeX < -7 || altura_rasante < verticeY + 1 || altura_rasante < 3);
+      procura_ponto_rasante();
+      if (ponto_rasante > petrel_x || rasante(a, verticeX, verticeY, -7) < 2)
+      {
+        cout << (rasante(a, verticeX, verticeY, 7) < 2) << endl;
+        verticeX = 0;
+        verticeY = 0;
+        altura_rasante = 0;
+        no_rasante = false;
+        return false;
+      }
+    }
+    return true;
+  }
+  return false;
 }
 
 bool testeCapturaFrente()
@@ -433,7 +591,6 @@ bool PINGUIM_NO_LAGO_FRENTE()
       dy = posicao_inicial_pinguimY;
       return false;
     }
-
     dx = dxAnterior;
     dy = dyAnterior;
     return true;
@@ -447,7 +604,6 @@ bool PINGUIM_NO_LAGO_TRAS()
   {
     if ((-5.6 + dx * velocidade_pinguim >= 0 && -5.6 + dx * velocidade_pinguim <= 7) && (-1.1 + dy * velocidade_pinguim >= -7 && -1.1 + dy * velocidade_pinguim <= -1))
     {
-
       dxAnterior = dx;
       dyAnterior = dy;
       return true;
@@ -455,17 +611,14 @@ bool PINGUIM_NO_LAGO_TRAS()
 
     if ((-5.6 + dx * velocidade_pinguim < -1) && (-5.6 + dx * velocidade_pinguim > -0.3) && (-1.1 + dy * velocidade_pinguim == -1.1))
     {
-
       dxAnterior = dx;
       dyAnterior = dy;
       pinguim_Mergulhou = false;
-      // cout << "Saiu" << endl;
       return true;
     }
 
     if ((-5.6 + dx * velocidade_pinguim < 0) && (-1.1 + dy * velocidade_pinguim == -1.1))
     {
-      // cout << "oi4444" << endl;
       pinguim_Mergulhou = false;
       return false;
     }
@@ -476,7 +629,6 @@ bool PINGUIM_NO_LAGO_TRAS()
       return false;
     }
 
-    // cout << "NAO TRATADO" << endl;
     dx = dxAnterior;
     dy = dyAnterior;
     return true;
@@ -489,7 +641,6 @@ bool PINGUIM_NO_VERDE()
 {
   if ((-7.5 + dx * velocidade_pinguim < lago_X0 && -7.5 + dx * velocidade_pinguim >= posicao_filhote) && !pinguim_Mergulhou)
   {
-
     dy = 0;
     dyAnterior = 0;
     dxAnterior = dx;
@@ -529,10 +680,14 @@ void CapturaPeixe(int i)
   }
 }
 
+double rasante(double a, double h, double k, double x)
+{
+  return a * x * x - 2 * a * x * h + a * h * h + k;
+}
+
 void display()
 {
-
-  if ((frameNumber <= _5minutos) && (cronometroPinguimFilhote <= _1minuto))
+  if ((frameNumber <= _5minutos) && (cronometroPinguimFilhote <= _1minuto) && !perdeu)
   {
     // Limpa a janela, colocando na tela a cor definida pela função glClearColor
     glClear(GL_COLOR_BUFFER_BIT);
@@ -611,7 +766,6 @@ void display()
             barrigaPeixe = peixeY[i] - 0.2;
             costaPeixe = peixeY[i] + 0.2;
           }
-
           else if (!peixeDirecaoInicial[i] && !Troca_Esquerda(peixeX[i] + dxPeixe[i] * velocidade_peixe, i))
           {
             posicaoPeixeX[i] = peixeX[i] + dxPeixe[i] * velocidade_peixe;
@@ -718,7 +872,6 @@ void display()
         glPopMatrix();
       }
       glPopMatrix();
-
     }
     else if (PINGUIM_NO_LAGO_FRENTE())
     {
@@ -792,61 +945,111 @@ void display()
 
     if (pegouPeixe && -7.5 + dx * velocidade_pinguim <= -7)
     {
+      conta_peixes++;
       cronometroPinguimFilhote = 0;
       pegouPeixe = false;
     }
 
-    if (petrel_fez_razante())
-    {
-      petrel_x = 7 - rand() % 14;
-      do
-      {
-        petrel_y = rand() % 8;
-      } while (petrel_y < 4);
-    }
-
-    
-
     glPushMatrix();
-    if (!direcao_esquerda)
+
+    if ((!comecando_rasante() && !no_rasante))
     {
-      if (petrel_x + framePetrel * 0.1 <= 7)
-      {
-        glTranslated(petrel_x + framePetrel * velocidade_petrel, petrel_y, 0);
-      }
-      else
-      {
-        petrel_x = 7;
-        direcao_esquerda = true;
-        framePetrel = 0;
-        glTranslated(petrel_x - framePetrel * velocidade_petrel, petrel_y, 0);
-      }
+      movimento_padrao_petrel();
     }
     else
     {
-      if (petrel_x - framePetrel * 0.1 >= -7)
+      if (!direcao_esquerda)
       {
-        glTranslated(petrel_x - framePetrel * velocidade_petrel, petrel_y, 0);
+        if (petrel_x + framePetrel * velocidade_petrel >= ponto_rasante)
+        {
+          if (petrel_x + framePetrel * velocidade_petrel <= 7)
+          {
+            posX = petrel_x + framePetrel * velocidade_petrel;
+            posY = rasante(a, verticeX, verticeY, posX);
+          }
+          else
+          {
+            petrel_x = 7;
+            direcao_esquerda = true;
+            framePetrel = 0;
+            posX = petrel_x - framePetrel * velocidade_petrel;
+            posY = rasante(a, verticeX, verticeY, posX);
+            petrel_y = posY;
+            no_rasante = false;
+            verticeX = 0;
+            verticeY = 0;
+          }
+          if (posX > verticeX && posY >= altura_rasante)
+          {
+            petrel_x = posX;
+            petrel_y = posY;
+            verticeX = 0;
+            verticeY = 0;
+            framePetrel = 0;
+            no_rasante = false;
+          }
+        }
+        else
+        {
+          movimento_padrao_petrel();
+        }
       }
       else
       {
-        petrel_x = -7;
-        direcao_esquerda = false;
-        framePetrel = 0;
-        glTranslated(petrel_x + framePetrel * velocidade_petrel, petrel_y, 0);
+        if (petrel_x - framePetrel * velocidade_petrel <= ponto_rasante)
+        {
+          if (petrel_x - framePetrel * velocidade_petrel >= -7)
+          {
+            posX = petrel_x - framePetrel * velocidade_petrel;
+            posY = rasante(a, verticeX, verticeY, posX);
+          }
+          else
+          {
+            petrel_x = -7;
+            direcao_esquerda = false;
+            framePetrel = 0;
+            posX = petrel_x + framePetrel * velocidade_petrel;
+            posY = rasante(a, verticeX, verticeY, posX);
+            petrel_y = posY;
+            no_rasante = false;
+            framePetrel = 0;
+            verticeX = 0;
+            verticeY = 0;
+          }
+          if (posX < verticeX && posY >= altura_rasante)
+          {
+            petrel_x = posX;
+            petrel_y = posY;
+            framePetrel = 0;
+            no_rasante = false;
+            verticeX = 0;
+            verticeY = 0;
+          }
+        }
+        else
+        {
+          movimento_padrao_petrel();
+        }
       }
     }
+    glTranslated(posX, posY, 0);
     glScaled(0.8, 0.8, 1);
     petrel();
     glPopMatrix();
 
     glPopMatrix();
 
+    if (petrel_atinge())
+    {
+      perdeu = true;
+    }
+
     // Libera o buffer de comando de desenho para fazer o desenho acontecer o mais rápido possível.
     glFlush();
   }
   else
   {
+    glClearColor(0.6784, 0.8471, 0.902, 1.0);
     return;
   }
 }
