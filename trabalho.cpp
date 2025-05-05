@@ -84,6 +84,580 @@ double posicaoPinguimY = posicao_inicial_pinguimY;
 bool pinguim_Mergulhou = false;
 double velocidade_pinguim = 0.5;
 #pragma endregion
+void A() {
+  glPushMatrix();
+
+  glBegin(GL_LINES);
+
+  glVertex2f(-0.5, 0.0);
+  glVertex2f(0.0, 1.0);
+
+  glVertex2f(0.5, 0.0);
+  glVertex2f(0.0, 1.0);
+
+  glVertex2f(-0.25, 0.5);
+  glVertex2f(0.25, 0.5);
+
+  glEnd();
+
+  glPopMatrix();
+}
+
+void C() {
+  glPushMatrix();
+
+  glBegin(GL_LINE_STRIP);
+
+  glVertex2f(0.4, 0.9);
+  glVertex2f(-0.5, 0.9);
+
+  glVertex2f(-0.5, 0.1);
+  glVertex2f(0.4, 0.1);
+
+  glEnd();
+
+  glPopMatrix();
+}
+
+void D() {
+  glPushMatrix();
+
+  glBegin(GL_LINES);
+
+  glVertex2f(-0.5, 0.0);
+  glVertex2f(-0.5, 1.0);
+
+  glVertex2f(-0.5, 1.0);
+  glVertex2f(0.3, 0.85);
+
+  glVertex2f(0.3, 0.85);
+  glVertex2f(0.3, 0.15);
+
+  glVertex2f(0.3, 0.15);
+  glVertex2f(-0.5, 0.0);
+
+  glEnd();
+
+  glPopMatrix();
+}
+void E() {
+  glPushMatrix();
+
+  glBegin(GL_LINES);
+
+  glVertex2f(-0.5, 1.0);
+  glVertex2f(0.4, 1.0);
+
+  glVertex2f(-0.5, 0.5);
+  glVertex2f(0.4, 0.5);
+
+  glVertex2f(-0.5, 0.0);
+  glVertex2f(0.4, 0.0);
+
+  glVertex2f(-0.5, 1.0);
+  glVertex2f(-0.5, 0.0);
+
+  glEnd();
+
+  glPopMatrix();
+}
+
+void G() {
+  glPushMatrix();
+
+  glBegin(GL_LINE_STRIP);
+
+  glVertex2f(0.4, 0.9);
+  glVertex2f(-0.5, 0.9);
+
+  glVertex2f(-0.5, 0.1);
+  glVertex2f(0.4, 0.1);
+
+  glVertex2f(0.4, 0.1);
+  glVertex2f(0.4, 0.5);
+
+  glVertex2f(0.4, 0.5);
+  glVertex2f(0.0, 0.5);
+
+  glEnd();
+
+  glPopMatrix();
+}
+
+void H() {
+  glPushMatrix();
+
+  glBegin(GL_LINES);
+
+  glVertex2f(-0.5, 0.0);
+  glVertex2f(-0.5, 1.0);
+
+  glVertex2f(0.5, 0.0);
+  glVertex2f(0.5, 1.0);
+
+  glVertex2f(-0.5, 0.5);
+  glVertex2f(0.5, 0.5);
+
+  glEnd();
+
+  glPopMatrix();
+}
+
+void N() {
+  glPushMatrix();
+
+  glBegin(GL_LINES);
+
+  glVertex2f(-0.5, 0.0);
+  glVertex2f(-0.5, 1.0);
+
+  glVertex2f(-0.5, 1.0);
+  glVertex2f(0.5, 0.0);
+
+  glVertex2f(0.5, 0.0);
+  glVertex2f(0.5, 1.0);
+
+  glEnd();
+
+  glPopMatrix();
+}
+
+void O() {
+  glPushMatrix();
+
+  glBegin(GL_LINE_LOOP);
+
+  glVertex2f(-0.5, 0.1);
+  glVertex2f(-0.5, 0.9);
+
+  glVertex2f(0.5, 0.9);
+  glVertex2f(0.5, 0.1);
+
+  glEnd();
+
+  glPopMatrix();
+}
+
+void P() {
+  glPushMatrix();
+
+  glBegin(GL_LINES);
+
+  glVertex2f(-0.5, 0.0);
+  glVertex2f(-0.5, 1.0);
+
+  glVertex2f(-0.5, 1.0);
+  glVertex2f(0.4, 1.0);
+
+  glVertex2f(0.4, 1.0);
+  glVertex2f(0.4, 0.5);
+
+  glVertex2f(0.4, 0.5);
+  glVertex2f(-0.5, 0.5);
+
+  glEnd();
+
+  glPopMatrix();
+}
+
+void R() {
+  glPushMatrix();
+
+  glBegin(GL_LINES);
+
+  glVertex2f(-0.5, 0.0);
+  glVertex2f(-0.5, 1.0);
+
+  glVertex2f(-0.5, 1.0);
+  glVertex2f(0.4, 1.0);
+
+  glVertex2f(0.4, 1.0);
+  glVertex2f(0.4, 0.5);
+
+  glVertex2f(0.4, 0.5);
+  glVertex2f(-0.5, 0.5);
+
+  glVertex2f(-0.5, 0.5);
+  glVertex2f(0.5, 0.0);
+
+  glEnd();
+
+  glPopMatrix();
+}
+
+void T() {
+  glPushMatrix();
+
+  glBegin(GL_LINES);
+
+  glVertex2f(0.0, 0.0);
+  glVertex2f(0.0, 1.0);
+
+  glVertex2f(-0.5, 1.0);
+  glVertex2f(0.5, 1.0);
+
+  glEnd();
+
+  glPopMatrix();
+}
+
+void U() {
+  glPushMatrix();
+
+  glBegin(GL_LINES);
+
+  glVertex2f(-0.5, 1.0);
+  glVertex2f(-0.5, 0.1);
+
+  glVertex2f(-0.5, 0.1);
+  glVertex2f(0.5, 0.1);
+
+  glVertex2f(0.5, 0.1);
+  glVertex2f(0.5, 1.0);
+
+  glEnd();
+
+  glPopMatrix();
+}
+
+void zero()
+{
+  glPushMatrix();
+  glBegin(GL_LINES);
+  glVertex3f(-0.5,0,0);
+  glVertex3f(0.5,0,0);
+  glVertex3f(0.5,0,0);
+  glVertex3f(0.5,1,0);
+  glVertex3f(-0.5,1,0);
+  glVertex3f(-0.5,2,0);
+  glVertex3f(-0.5,2,0);
+  glVertex3f(0.5,2,0);
+  glVertex3f(-0.5,0,0);
+  glVertex3f(-0.5,1,0);
+  glVertex3f(0.5,2,0);
+  glVertex3f(0.5,1,0);
+
+  glEnd();
+  glPopMatrix();
+
+}
+
+void um()
+{
+  glPushMatrix();
+  glBegin(GL_LINES);
+  glVertex3f(-0.5,0,0);
+  glVertex3f(0.5,0,0);
+  glVertex3f(0,0,0);
+  glVertex3f(0,2,0);
+  glVertex3f(0,2,0);
+  glVertex3f(-0.5,1,0);
+  glEnd();
+  glPopMatrix();
+
+}
+
+void dois()
+{
+  glPushMatrix();
+  glBegin(GL_LINES);
+  glVertex3f(-0.5,0,0);
+  glVertex3f(0.5,0,0);
+  glVertex3f(-0.5,0,0);
+  glVertex3f(-0.5,1,0);
+  glVertex3f(-0.5,1,0);
+  glVertex3f(0.5,1,0);
+  glVertex3f(0.5,1,0);
+  glVertex3f(0.5,2,0);
+  glVertex3f(0.5,2,0);
+  glVertex3f(-0.5,2,0);
+  glEnd();
+  glPopMatrix();
+
+}
+
+void tres()
+{
+  glPushMatrix();
+  glBegin(GL_LINES);
+  glVertex3f(-0.5,0,0);
+  glVertex3f(0.5,0,0);
+  glVertex3f(0.5,0,0);
+  glVertex3f(0.5,1,0);
+  glVertex3f(-0.5,1,0);
+  glVertex3f(0.5,1,0);
+  glVertex3f(0.5,1,0);
+  glVertex3f(0.5,2,0);
+  glVertex3f(0.5,2,0);
+  glVertex3f(-0.5,2,0);
+  glEnd();
+  glPopMatrix();
+
+}
+
+void quatro()
+{
+  glPushMatrix();
+  glBegin(GL_LINES);
+  glVertex3f(0.5,0,0);
+  glVertex3f(0.5,2,0);
+  glVertex3f(0.5,1,0);
+  glVertex3f(-0.5,1,0);
+  glVertex3f(-0.5,1,0);
+  glVertex3f(-0.5,2,0);
+  glEnd();
+  glPopMatrix();
+
+}
+
+void cinco()
+{
+  glPushMatrix();
+  glBegin(GL_LINES);
+  glVertex3f(-0.5,0,0);
+  glVertex3f(0.5,0,0);
+  glVertex3f(0.5,0,0);
+  glVertex3f(0.5,1,0);
+  glVertex3f(0.5,1,0);
+  glVertex3f(-0.5,1,0);
+  glVertex3f(-0.5,1,0);
+  glVertex3f(-0.5,2,0);
+  glVertex3f(-0.5,2,0);
+  glVertex3f(0.5,2,0);
+  glEnd();
+  glPopMatrix();
+
+}
+
+void seis()
+{
+  glPushMatrix();
+  glBegin(GL_LINES);
+  glVertex3f(-0.5,0,0);
+  glVertex3f(0.5,0,0);
+  glVertex3f(0.5,0,0);
+  glVertex3f(0.5,1,0);
+  glVertex3f(0.5,1,0);
+  glVertex3f(-0.5,1,0);
+  glVertex3f(-0.5,1,0);
+  glVertex3f(-0.5,2,0);
+  glVertex3f(-0.5,2,0);
+  glVertex3f(0.5,2,0);
+  glVertex3f(-0.5,0,0);
+  glVertex3f(-0.5,1,0);
+
+  glEnd();
+  glPopMatrix();
+
+}
+
+void sete()
+{
+  glPushMatrix();
+  glBegin(GL_LINES);
+  glVertex3f(0.5,0,0);
+  glVertex3f(0.5,2,0);
+  glVertex3f(0.5,2,0);
+  glVertex3f(-0.5,2,0);
+  glEnd();
+  glPopMatrix();
+
+}
+
+void oito()
+{
+  glPushMatrix();
+  glBegin(GL_LINES);
+  glVertex3f(-0.5,0,0);
+  glVertex3f(0.5,0,0);
+  glVertex3f(0.5,0,0);
+  glVertex3f(0.5,1,0);
+  glVertex3f(0.5,1,0);
+  glVertex3f(-0.5,1,0);
+  glVertex3f(-0.5,1,0);
+  glVertex3f(-0.5,2,0);
+  glVertex3f(-0.5,2,0);
+  glVertex3f(0.5,2,0);
+  glVertex3f(-0.5,0,0);
+  glVertex3f(-0.5,1,0);
+  glVertex3f(0.5,2,0);
+  glVertex3f(0.5,1,0);
+
+  glEnd();
+  glPopMatrix();
+
+}
+
+void nove()
+{
+  glPushMatrix();
+  glBegin(GL_LINES);
+  glVertex3f(-0.5,0,0);
+  glVertex3f(0.5,0,0);
+  glVertex3f(0.5,0,0);
+  glVertex3f(0.5,1,0);
+  glVertex3f(0.5,1,0);
+  glVertex3f(-0.5,1,0);
+  glVertex3f(-0.5,1,0);
+  glVertex3f(-0.5,2,0);
+  glVertex3f(-0.5,2,0);
+  glVertex3f(0.5,2,0);
+  glVertex3f(0.5,2,0);
+  glVertex3f(0.5,1,0);
+
+  glEnd();
+  glPopMatrix();
+
+}
+
+void impreme_pontuacao()
+{
+  int dezena, resto_dezena, unidade;
+  dezena = conta_peixes/10;
+  resto_dezena = conta_peixes%10;
+  unidade = resto_dezena;
+  
+  switch (dezena)
+  {
+    case 1:
+    glPushMatrix();
+    glTranslated(6,7,0);
+    glScaled(0.2,0.2,1);
+    um();
+    glPopMatrix();
+      break;
+    case 2:
+    glPushMatrix();
+    glTranslated(6,7,0);
+    glScaled(0.2,0.2,1);
+    dois();
+    glPopMatrix();
+      break;
+    case 3:
+    glPushMatrix();
+    glTranslated(6,7,0);
+    glScaled(0.2,0.2,1);
+    tres();
+    glPopMatrix();
+      break;
+    case 4:
+    glPushMatrix();
+    glTranslated(6,7,0);
+    glScaled(0.2,0.2,1);
+    quatro();
+    glPopMatrix();
+      break;
+    case 5:
+    glPushMatrix();
+    glTranslated(6,7,0);
+    glScaled(0.2,0.2,1);
+    cinco();
+    glPopMatrix();
+      break;
+    case 6:
+    glPushMatrix();
+    glTranslated(6,7,0);
+    glScaled(0.2,0.2,1);
+    seis();
+    glPopMatrix();
+      break;
+    case 7:
+    glPushMatrix();
+    glTranslated(6,7,0);
+    glScaled(0.2,0.2,1);
+    sete();
+    glPopMatrix();
+      break;
+    case 8:
+    glPushMatrix();
+    glTranslated(6,7,0);
+    glScaled(0.2,0.2,1);
+    oito();
+    glPopMatrix();
+      break;
+    case 9:
+    glPushMatrix();
+    glTranslated(6,7,0);
+    glScaled(0.2,0.2,1);
+    nove();
+    glPopMatrix();
+      break;
+  }
+
+  switch (unidade)
+  {
+    case 0:
+    glPushMatrix();
+    glTranslated(6.5,7,0);
+    glScaled(0.2,0.2,1);
+    zero();
+    glPopMatrix();
+      break;
+    case 1:
+    glPushMatrix();
+    glTranslated(6.5,7,0);
+    glScaled(0.2,0.2,1);
+    um();
+    glPopMatrix();
+      break;
+    case 2:
+    glPushMatrix();
+    glTranslated(6.5,7,0);
+    glScaled(0.2,0.2,1);
+    dois();
+    glPopMatrix();
+      break;
+    case 3:
+    glPushMatrix();
+    glTranslated(6.5,7,0);
+    glScaled(0.2,0.2,1);
+    tres();
+    glPopMatrix();
+      break;
+    case 4:
+    glPushMatrix();
+    glTranslated(6.5,7,0);
+    glScaled(0.2,0.2,1);
+    quatro();
+    glPopMatrix();
+      break;
+    case 5:
+    glPushMatrix();
+    glTranslated(6.5,7,0);
+    glScaled(0.2,0.2,1);
+    cinco();
+    glPopMatrix();
+      break;
+    case 6:
+    glPushMatrix();
+    glTranslated(6.5,7,0);
+    glScaled(0.2,0.2,1);
+    seis();
+    glPopMatrix();
+      break;
+    case 7:
+    glPushMatrix();
+    glTranslated(6.5,7,0);
+    glScaled(0.2,0.2,1);
+    sete();
+    glPopMatrix();
+      break;
+    case 8:
+    glPushMatrix();
+    glTranslated(6.5,7,0);
+    glScaled(0.2,0.2,1);
+    oito();
+    glPopMatrix();
+      break;
+    case 9:
+    glPushMatrix();
+    glTranslated(6.5,7,0);
+    glScaled(0.2,0.2,1);
+    nove();
+    glPopMatrix();
+      break;
+  }
+}
 
 bool petrel_atinge()
 {
@@ -678,15 +1252,14 @@ double rasante(double a, double h, double k, double x)
 
 void display()
 {
+  srand((unsigned)time(NULL));
+  glClear(GL_COLOR_BUFFER_BIT);
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity();
+
   if ((frameNumber <= _5minutos) && (cronometroPinguimFilhote <= _1minuto) && !perdeu)
   {
-    srand((unsigned)time(NULL));
     // Limpa a janela, colocando na tela a cor definida pela função glClearColor
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-
     // QUADRADO VERDE
     glPushMatrix();
     glTranslated(-5, -3.5, 0);
@@ -1037,6 +1610,7 @@ void display()
     if (petrel_atinge())
     {
       perdeu = true;
+      glClearColor(0, 0, 0, 0);
     }
     // glPushMatrix();
     // if (verticeX != 0 || verticeY != 0)
@@ -1067,12 +1641,93 @@ void display()
     // glEnd();
     // glPopMatrix();
     // Libera o buffer de comando de desenho para fazer o desenho acontecer o mais rápido possível.
-    glFlush();
-  }
-  else
-  {
-    glClearColor(0.6784, 0.8471, 0.902, 1.0);
-  }
+    glPushMatrix();
+    glColor3f(0,0,0);
+    impreme_pontuacao();
+    glPopMatrix();
+
+  } else {
+    if (frameNumber <= _5minutos){
+    glPushMatrix();
+    glColor3f(1,1,1);
+    glPushMatrix();
+    glTranslated(-2,0,0);
+    P();
+    glPopMatrix();
+
+    glColor3f(1,1,1);
+    glPushMatrix();
+    glTranslated(-0.9,0,0);
+    E();
+    glPopMatrix();
+
+    glColor3f(1,1,1);
+    glPushMatrix();
+    glTranslated(0.1,0,0);
+    R();
+    glPopMatrix();
+
+    glColor3f(1,1,1);
+    glPushMatrix();
+    glTranslated(1.1,0,0);
+    D();
+    glPopMatrix();
+
+    glColor3f(1,1,1);
+    glPushMatrix();
+    glTranslated(2.1,0,0);
+    E();
+    glPopMatrix();
+
+    glColor3f(1,1,1);
+    glPushMatrix();
+    glTranslated(3.1,0,0);
+    U();
+    glPopMatrix();
+    glPopMatrix();
+    }
+    else {
+    glPushMatrix();
+    glColor3f(1,1,1);
+    glPushMatrix();
+    glTranslated(-2,0,0);
+    G();
+    glPopMatrix();
+
+    glColor3f(1,1,1);
+    glPushMatrix();
+    glTranslated(-0.9,0,0);
+    A();
+    glPopMatrix();
+
+    glColor3f(1,1,1);
+    glPushMatrix();
+    glTranslated(0.1,0,0);
+    N();
+    glPopMatrix();
+
+    glColor3f(1,1,1);
+    glPushMatrix();
+    glTranslated(1.3,0,0);
+    H();
+    glPopMatrix();
+
+    glColor3f(1,1,1);
+    glPushMatrix();
+    glTranslated(2.5,0,0);
+    O();
+    glPopMatrix();
+
+    glColor3f(1,1,1);
+    glPushMatrix();
+    glTranslated(3.7,0,0);
+    U();
+    glPopMatrix();
+
+    glPopMatrix();
+    } 
+    }
+  glFlush();
 }
 
 void Frame(int v)
