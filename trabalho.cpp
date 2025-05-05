@@ -1,5 +1,5 @@
-//fazer tela de perdeu
-//contador de peixes na tela
+// fazer tela de perdeu
+// contador de peixes na tela
 
 #include <GL/glut.h>
 #include <iostream>
@@ -7,6 +7,8 @@
 #include <ctime>
 using namespace std;
 
+double proximo_passo_direita_x();
+double proximo_passo_esquerda_x();
 double rasante(double a, double h, double k, double x);
 bool PINGUIM_FRENTE();
 bool PINGUIM_NO_LAGO_TRAS();
@@ -32,22 +34,24 @@ int conta_peixes = 0;
 bool direcao_esquerda = false;
 int framePetrel = 0;
 double velocidade_petrel = 0.1;
-double petrel_x = -6.5;
+double petrel_x = -7;
 double petrel_y = 5;
 double altura_rasante;
 double ponto_rasante;
 bool no_rasante = false;
 bool terminou_rasante = true;
 double a, verticeX, verticeY;
-double posX;
-double posY;
+int petrel_limite_direita = 7;
+int petrel_limite_esquerda = -7;
+double posX = -7;
+double posY = 5;
 #pragma endregion
 
 #pragma region Variaveis Peixes
 double velocidade_peixe = 0.02;
 bool peixeCapturado[4] = {true, true, true, true};
-int peixeX[4];
-int peixeY[4];
+double peixeX[4];
+double peixeY[4];
 bool esquerda[4] = {false, false, false, false};
 bool direita[4] = {false, false, false, false};
 bool peixe_virou[4] = {false, false, false, false};
@@ -101,32 +105,32 @@ void movimento_padrao_petrel()
 {
   if (!direcao_esquerda)
   {
-    if (petrel_x + framePetrel * velocidade_petrel <= 7)
+    if (proximo_passo_direita_x() <= petrel_limite_direita)
     {
-      posX = petrel_x + framePetrel * velocidade_petrel;
+      posX = proximo_passo_direita_x();
       posY = petrel_y;
     }
     else
     {
-      petrel_x = 7;
+      petrel_x = petrel_limite_direita;
       framePetrel = 0;
-      posX = petrel_x - framePetrel * velocidade_petrel;
+      posX = proximo_passo_esquerda_x();
       posY = petrel_y;
       direcao_esquerda = true;
     }
   }
   else
   {
-    if (petrel_x - framePetrel * velocidade_petrel >= -7)
+    if (proximo_passo_esquerda_x() >= petrel_limite_esquerda)
     {
-      posX = petrel_x - framePetrel * velocidade_petrel;
+      posX = proximo_passo_esquerda_x();
       posY = petrel_y;
     }
     else
     {
-      petrel_x = -7;
+      petrel_x = petrel_limite_esquerda;
       framePetrel = 0;
-      posX = petrel_x + framePetrel * velocidade_petrel;
+      posX = proximo_passo_direita_x();
       posY = petrel_y;
       direcao_esquerda = false;
     }
@@ -137,7 +141,7 @@ void procura_ponto_rasante()
 {
   if (!direcao_esquerda)
   {
-    for (double i = -7; i < 7; i = i + 0.1)
+    for (double i = petrel_limite_esquerda; i < petrel_limite_direita; i = i + 0.1)
     {
       if (rasante(a, verticeX, verticeY, i) <= petrel_y)
       {
@@ -148,7 +152,7 @@ void procura_ponto_rasante()
   }
   else
   {
-    for (double i = 7; i > -7; i = i - 0.1)
+    for (double i = petrel_limite_direita; i > petrel_limite_esquerda; i = i - 0.1)
     {
       if (rasante(a, verticeX, verticeY, i) <= petrel_y)
       {
@@ -159,72 +163,59 @@ void procura_ponto_rasante()
   }
 }
 
+double proximo_passo_direita_x()
+{
+  return petrel_x + framePetrel * velocidade_petrel;
+}
+
+double proximo_passo_esquerda_x()
+{
+  return petrel_x - framePetrel * velocidade_petrel;
+}
+
 bool comecando_rasante()
 {
   if (no_rasante)
   {
     return false;
   }
-
-  if (rand() % 5 == 0)
+  else
   {
-    no_rasante = true;
-    petrel_x = posX;
-    petrel_y = posY;
-    framePetrel = 0;
-    a = 1;
-    a = (float)rand() / RAND_MAX;
-    if (!direcao_esquerda)
+    if (!direcao_esquerda && petrel_x == petrel_limite_esquerda)
     {
-      if (petrel_x + 1 >= 7)
-      {
-        no_rasante = false;
-        return false;
-      }
+      no_rasante = true;
+      petrel_x = posX;
+      petrel_y = posY;
+      framePetrel = 0;
+      a = (double)rand() / RAND_MAX;
       do
       {
-        verticeX = petrel_x + 1 + rand() % 12;
-        verticeY = rand() % 2;
-        altura_rasante = rand() % 6;
-
-      } while (verticeX > 7 || altura_rasante < verticeY + 1 || altura_rasante < 3);
-      procura_ponto_rasante();
-      if (ponto_rasante < petrel_x || rasante(a, verticeX, verticeY, 7) < 2)
-      {
-        verticeX = 0;
-        verticeY = 0;
-        altura_rasante = 0;
-        no_rasante = false;
-        return false;
-      }
+        verticeX = ((double)rand() / RAND_MAX) * 7;
+        verticeY = ((double)rand() / RAND_MAX) * 2;
+        altura_rasante = ((double)rand() / RAND_MAX) * 6;
+        procura_ponto_rasante();
+      } while (verticeX > petrel_limite_direita || altura_rasante < verticeY + 1 || altura_rasante < 3 || ponto_rasante < petrel_x || rasante(a, verticeX, verticeY, petrel_limite_direita) < 2);
+      return true;
     }
-    else
+    else if (direcao_esquerda && petrel_x == petrel_limite_direita)
     {
-      if (petrel_x - 1 <= -7)
-      {
-        no_rasante = false;
-        return false;
-      }
+      no_rasante = true;
+      petrel_x = posX;
+      petrel_y = posY;
+      framePetrel = 0;
+      a = (float)rand() / RAND_MAX;
       do
       {
-        verticeX = petrel_x - 1 - rand() % 12;
-        verticeY = rand() % 2;
-        altura_rasante = rand() % 6;
-      } while (verticeX < -7 || altura_rasante < verticeY + 1 || altura_rasante < 3);
-      procura_ponto_rasante();
-      if (ponto_rasante > petrel_x || rasante(a, verticeX, verticeY, -7) < 2)
-      {
-        cout << (rasante(a, verticeX, verticeY, 7) < 2) << endl;
-        verticeX = 0;
-        verticeY = 0;
-        altura_rasante = 0;
-        no_rasante = false;
-        return false;
-      }
+        verticeX = ((double)rand() / RAND_MAX) * -7;
+        verticeY = ((double)rand() / RAND_MAX) * 2;
+        altura_rasante = ((double)rand() / RAND_MAX) * 6;
+        procura_ponto_rasante();
+      } while (verticeX < petrel_limite_esquerda || altura_rasante < verticeY + 1 || altura_rasante < 3 || ponto_rasante > petrel_x || rasante(a, verticeX, verticeY, petrel_limite_esquerda) < 2);
+      // cout << (rasante(a, verticeX, verticeY, 7) < 2) << endl;
+      return true;
     }
-    return true;
+    return false;
   }
-  return false;
 }
 
 bool testeCapturaFrente()
@@ -689,6 +680,7 @@ void display()
 {
   if ((frameNumber <= _5minutos) && (cronometroPinguimFilhote <= _1minuto) && !perdeu)
   {
+    srand((unsigned)time(NULL));
     // Limpa a janela, colocando na tela a cor definida pela função glClearColor
     glClear(GL_COLOR_BUFFER_BIT);
 
@@ -717,8 +709,8 @@ void display()
       if (peixeCapturado[i])
       {
         peixeDirecaoInicial[i] = rand() % 2;
-        peixeX[i] = -0.5 + rand() % 8;
-        peixeY[i] = -1 - rand() % 6;
+        peixeX[i] = ((double)rand() / RAND_MAX) * 7;
+        peixeY[i] = -0.5 + ((double)rand() / RAND_MAX) * -6;
 
         bool colisao;
         do
@@ -726,9 +718,13 @@ void display()
           colisao = false;
           for (int j = 3; j >= 0; j--)
           {
-            if (j != i && peixeY[i] == peixeY[j])
+            double barrigaPeixe_j = peixeY[j] - 0.2;
+            double costaPeixe_j = peixeY[j] + 0.2;
+            barrigaPeixe = peixeY[i] - 0.2;
+            costaPeixe = peixeY[i] + 0.2;
+            if ((j != i) && ((barrigaPeixe >= barrigaPeixe_j - 0.1 && barrigaPeixe <= costaPeixe_j + 0.1) || (costaPeixe >= barrigaPeixe_j - 0.1 && costaPeixe <= costaPeixe_j + 0.1)))
             {
-              peixeY[i] = -1 - rand() % 6;
+              peixeY[i] = -0.5 + ((double)rand() / RAND_MAX) * -6;
               colisao = true;
               break;
             }
@@ -960,19 +956,19 @@ void display()
     {
       if (!direcao_esquerda)
       {
-        if (petrel_x + framePetrel * velocidade_petrel >= ponto_rasante)
+        if (proximo_passo_direita_x() >= ponto_rasante)
         {
-          if (petrel_x + framePetrel * velocidade_petrel <= 7)
+          if (proximo_passo_direita_x() <= petrel_limite_direita)
           {
-            posX = petrel_x + framePetrel * velocidade_petrel;
+            posX = proximo_passo_direita_x();
             posY = rasante(a, verticeX, verticeY, posX);
           }
           else
           {
-            petrel_x = 7;
+            petrel_x = petrel_limite_direita;
             direcao_esquerda = true;
             framePetrel = 0;
-            posX = petrel_x - framePetrel * velocidade_petrel;
+            posX = proximo_passo_esquerda_x();
             posY = rasante(a, verticeX, verticeY, posX);
             petrel_y = posY;
             no_rasante = false;
@@ -996,23 +992,22 @@ void display()
       }
       else
       {
-        if (petrel_x - framePetrel * velocidade_petrel <= ponto_rasante)
+        if (proximo_passo_esquerda_x() <= ponto_rasante)
         {
-          if (petrel_x - framePetrel * velocidade_petrel >= -7)
+          if (proximo_passo_esquerda_x() >= petrel_limite_esquerda)
           {
-            posX = petrel_x - framePetrel * velocidade_petrel;
+            posX = proximo_passo_esquerda_x();
             posY = rasante(a, verticeX, verticeY, posX);
           }
           else
           {
-            petrel_x = -7;
+            petrel_x = petrel_limite_esquerda;
             direcao_esquerda = false;
             framePetrel = 0;
-            posX = petrel_x + framePetrel * velocidade_petrel;
+            posX = proximo_passo_direita_x();
             posY = rasante(a, verticeX, verticeY, posX);
             petrel_y = posY;
             no_rasante = false;
-            framePetrel = 0;
             verticeX = 0;
             verticeY = 0;
           }
@@ -1043,14 +1038,40 @@ void display()
     {
       perdeu = true;
     }
-
+    // glPushMatrix();
+    // if (verticeX != 0 || verticeY != 0)
+    // {
+    //   glLineWidth(5);
+    //   glBegin(GL_LINES);
+    //   glColor3f(1, 0.4353, 0.6118);
+    //   for (double i = -8; i <= 8; i = i + 0.1)
+    //   {
+    //     glVertex3f(i, rasante(a, verticeX, verticeY, i), 0);
+    //   }
+    //   glEnd();
+    //   glPointSize(5);
+    //   glColor3f(1, 0, 0);
+    //   glVertex3f(ponto_rasante, petrel_y, 0);
+    //   glColor3f(1, 1, 0);
+    //   glVertex3f(ponto_rasante, altura_rasante, 0);
+    //   glEnd();
+    // }
+    // glLineWidth(5);
+    // glBegin(GL_POINTS);
+    // glColor3f(1, 0, 0);
+    // glVertex3f(posX, posY, 0);
+    // glVertex3f(7, 2, 0);
+    // glVertex3f(0, altura_rasante, 0);
+    // glEnd();
+    // cout << verticeY<<endl;
+    // glEnd();
+    // glPopMatrix();
     // Libera o buffer de comando de desenho para fazer o desenho acontecer o mais rápido possível.
     glFlush();
   }
   else
   {
     glClearColor(0.6784, 0.8471, 0.902, 1.0);
-    return;
   }
 }
 
