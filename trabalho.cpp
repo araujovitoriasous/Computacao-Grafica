@@ -1,6 +1,6 @@
-// fazer tela de perdeu
-// contador de peixes na tela
-
+//parametrizar movimento do pinguim, movimento pautado na posicao atual
+//parametrizar movimento dos peixes, movimento pautado na posicao atual
+//parametrizar movimento dos petrel, movimento pautado na posicao atual
 #include <GL/glut.h>
 #include <iostream>
 #include <cmath>
@@ -39,7 +39,6 @@ double petrel_y = 5;
 double altura_rasante;
 double ponto_rasante;
 bool no_rasante = false;
-bool terminou_rasante = true;
 double a, verticeX, verticeY;
 int petrel_limite_direita = 7;
 int petrel_limite_esquerda = -7;
@@ -140,6 +139,7 @@ void D() {
 
   glPopMatrix();
 }
+
 void E() {
   glPushMatrix();
 
@@ -1250,6 +1250,11 @@ double rasante(double a, double h, double k, double x)
   return a * x * x - 2 * a * x * h + a * h * h + k;
 }
 
+double proximo_movimento_pinguim_x()
+{
+  return posicaoPinguimX + dx*velocidade_pinguim;
+}
+
 void display()
 {
   srand((unsigned)time(NULL));
@@ -1610,7 +1615,6 @@ void display()
     if (petrel_atinge())
     {
       perdeu = true;
-      glClearColor(0, 0, 0, 0);
     }
     // glPushMatrix();
     // if (verticeX != 0 || verticeY != 0)
@@ -1631,20 +1635,21 @@ void display()
     //   glEnd();
     // }
     // glLineWidth(5);
-    // glBegin(GL_POINTS);
-    // glColor3f(1, 0, 0);
-    // glVertex3f(posX, posY, 0);
-    // glVertex3f(7, 2, 0);
-    // glVertex3f(0, altura_rasante, 0);
-    // glEnd();
     // cout << verticeY<<endl;
     // glEnd();
     // glPopMatrix();
     // Libera o buffer de comando de desenho para fazer o desenho acontecer o mais rápido possível.
-    glPushMatrix();
-    glColor3f(0,0,0);
-    impreme_pontuacao();
-    glPopMatrix();
+    // glPushMatrix();
+    // glColor3f(0,0,0);
+    // impreme_pontuacao();
+    // glPopMatrix();
+    // glPointSize(5);
+    // glBegin(GL_POINTS);
+    // glColor3f(1, 0, 0);
+    // glVertex3f(posicao_inicial_pinguimX + dx * velocidade_pinguim,0,0);
+    // glColor3f(1, 1, 0);
+    // glVertex3f(posicaoPinguimX,0,0);
+    // glEnd();
 
   } else {
     if (frameNumber <= _5minutos){
