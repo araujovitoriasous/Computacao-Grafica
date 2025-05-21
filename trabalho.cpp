@@ -1,12 +1,14 @@
-//parametrizar movimento do pinguim, movimento pautado na posicao atual
-//parametrizar movimento dos peixes, movimento pautado na posicao atual
-//parametrizar movimento dos petrel, movimento pautado na posicao atual
-#include <GL/glut.h>
-#include <iostream>
-#include <cmath>
-#include <ctime>
+// Comentário completo do código "Alimente o Pinguim Filhote"
+
+// ===== INCLUDES =====
+#include <GLUT/glut.h> // GLUT: biblioteca para gráficos em OpenGL
+#include <iostream>    // Entrada e saída padrão
+#include <cmath>       // Funções matemáticas
+#include <ctime>       // Funções relacionadas a tempo
 using namespace std;
 
+// ===== FUNÇÕES UTILIZADAS =====
+// Prototipagem de funções que serão definidas mais abaixo
 double proximo_passo_direita_x();
 double proximo_passo_esquerda_x();
 double rasante(double a, double h, double k, double x);
@@ -14,73 +16,102 @@ bool PINGUIM_FRENTE();
 bool PINGUIM_NO_LAGO_TRAS();
 bool PINGUIM_NO_VERDE();
 
+// ===== VARIÁVEIS GLOBAIS =====
+
 #pragma region Variaveis Globais
-int _5minutos = 15000;
-int _1minuto = 3000;
+int _5minutos = 15000; // 5 minutos em frames (supondo 20ms por frame)
+int _1minuto = 3000;   // 1 minuto em frames
+
+// Constante PI
 double PI = 3.14159;
+
+// Frame atual do jogo
 int frameNumber = 0;
+
+// Cronômetro para o tempo sem alimentar o filhote
 int cronometroPinguimFilhote = 0;
+
+// Limites do lago
 double lago_X0 = -1;
 double lago_X1 = 7;
 double lago_Y0 = 0.1;
 double lago_Y1 = -6.6;
+
+// Estado do jogo (perdeu ou não)
 bool perdeu = false;
+
+// Limites da área verde onde está o filhote
 double verde_X0 = -8;
 double verde_X1 = -1;
+
+// Quantidade de peixes entregues
 int conta_peixes = 0;
 #pragma endregion
 
+// ===== VARIÁVEIS DO PREDADOR PETREL =====
 #pragma region Variaveis Petrel
-bool direcao_esquerda = false;
-int framePetrel = 0;
-double velocidade_petrel = 0.1;
-double petrel_x = -7;
-double petrel_y = 5;
-double altura_rasante;
-double ponto_rasante;
-bool no_rasante = false;
-double a, verticeX, verticeY;
-int petrel_limite_direita = 7;
-int petrel_limite_esquerda = -7;
-double posX = -7;
-double posY = 5;
+bool direcao_esquerda = false; // Direção de voo do petrel
+int framePetrel = 0;           // Frames para animar o petrel
+double velocidade_petrel = 0.1; // Velocidade horizontal do petrel
+double petrel_x = -7;          // Posição X inicial
+double petrel_y = 5;           // Posição Y inicial
+double altura_rasante;         // Altura da parábola do rasante
+double ponto_rasante;          // Ponto em X onde o rasante inicia
+bool no_rasante = false;       // Flag para saber se o petrel está mergulhando
+double a, verticeX, verticeY;  // Parâmetros da parábola do rasante
+double petrel_limite_direita = 7;  // Limite do petrel na direita
+double petrel_limite_esquerda = -7; // Limite na esquerda
+double posX = -7; // Posição atual X animada
+double posY = 5;  // Posição atual Y animada
 #pragma endregion
 
+// ===== VARIÁVEIS DOS PEIXES =====
 #pragma region Variaveis Peixes
-double velocidade_peixe = 0.02;
-bool peixeCapturado[4] = {true, true, true, true};
-double peixeX[4];
-double peixeY[4];
-bool esquerda[4] = {false, false, false, false};
+double velocidade_peixe = 0.02; // Velocidade dos peixes
+bool peixeCapturado[4] = {true, true, true, true}; // Estado de captura dos peixes
+double peixeX[4]; // Posição X de cada peixe
+double peixeY[4]; // Posição Y de cada peixe
+bool esquerda[4] = {false, false, false, false}; // Direção de movimento dos peixes
 bool direita[4] = {false, false, false, false};
-bool peixe_virou[4] = {false, false, false, false};
-bool peixeDirecaoInicial[4];
-int dxPeixe[4] = {0, 0, 0, 0};
-double posicaoPeixeX[4] = {0, 0, 0, 0};
+bool peixe_virou[4] = {false, false, false, false}; // Se o peixe virou
+bool peixeDirecaoInicial[4]; // Direção inicial aleatória dos peixes
+int dxPeixe[4] = {0, 0, 0, 0}; // Controle de deslocamento horizontal de cada peixe
+double posicaoPeixeX[4] = {0, 0, 0, 0}; // Posição X atual de cada peixe
+
+// Limites corporais do peixe para colisão
 double cabeçaPeixe;
 double caudaPeixe;
 double barrigaPeixe;
 double costaPeixe;
 #pragma endregion
 
+// ===== VARIÁVEIS DO PINGUIM =====
 #pragma region Variaveis Pinguim
-int dx = 0;
-int dy = 0;
-bool tras = false;
+int dx = 0; // Direção horizontal do pinguim
+int dy = 0; // Direção vertical do pinguim
+bool tras = false; // Se está indo para trás
 int dxAnterior = 0;
 int dyAnterior = 0;
+
+// Coordenadas para colisão com o predador ou peixe
 double cabecaPinguim;
 double pataPinguim;
 double barrigaPinguim;
 double costaPinguim;
-bool pegouPeixe = false;
+
+bool pegouPeixe = false; // Se pegou o peixe
+
+// Posição inicial e atual do pinguim e filhote
 double posicao_filhote = -7.5;
 double posicao_inicial_pinguimX = -6.9;
 double posicao_inicial_pinguimY = 0.1;
 double barrigaPinguim_Inicial = -6.6;
 double posicaoPinguimX = posicao_inicial_pinguimX;
 double posicaoPinguimY = posicao_inicial_pinguimY;
-bool pinguim_Mergulhou = false;
+
+bool pinguim_Mergulhou = false; // Se está mergulhando
+
+// Velocidade de deslocamento
 double velocidade_pinguim = 0.5;
 #pragma endregion
 void A() {
@@ -659,6 +690,7 @@ void impreme_pontuacao()
   }
 }
 
+// Verifica se o petrel colidiu com o pinguim
 bool petrel_atinge()
 {
   if (!PINGUIM_NO_LAGO_TRAS() && PINGUIM_NO_VERDE())
@@ -675,6 +707,7 @@ bool petrel_atinge()
   return false;
 }
 
+// Controla o movimento horizontal do petrel fora do rasante
 void movimento_padrao_petrel()
 {
   if (!direcao_esquerda)
@@ -711,6 +744,7 @@ void movimento_padrao_petrel()
   }
 }
 
+// Procura ponto ideal para iniciar o rasante (curva)
 void procura_ponto_rasante()
 {
   if (!direcao_esquerda)
@@ -737,16 +771,19 @@ void procura_ponto_rasante()
   }
 }
 
+// Calcula o próximo passo do petrel indo para a direita
 double proximo_passo_direita_x()
 {
   return petrel_x + framePetrel * velocidade_petrel;
 }
 
+// Calcula o próximo passo do petrel indo para a esquerda
 double proximo_passo_esquerda_x()
 {
   return petrel_x - framePetrel * velocidade_petrel;
 }
 
+// Verifica se o petrel deve começar o rasante
 bool comecando_rasante()
 {
   if (no_rasante)
@@ -919,6 +956,7 @@ void triangle()
   glEnd();
 }
 
+// Função para desenhar um círculo (usado no corpo dos personagens)
 void Disk(double radius)
 {
   glBegin(GL_POLYGON);
@@ -930,6 +968,7 @@ void Disk(double radius)
   glEnd();
 }
 
+// Desenha o pinguim principal
 void Pinguim()
 {
   // BICO
@@ -990,6 +1029,7 @@ void Pinguim()
   glPopMatrix();
 }
 
+// Desenha o pinguim de costas
 void Pinguim_Contrario()
 {
   // BICO
@@ -1050,6 +1090,7 @@ void Pinguim_Contrario()
   glPopMatrix();
 }
 
+// Desenha o filhote de pinguim
 void Pinguim_Filhote()
 {
   glPushMatrix();
@@ -1116,6 +1157,7 @@ void Pinguim_Filhote()
   glPopMatrix();
 }
 
+// Desenha um peixe com corpo curvo
 void Peixe()
 {
   glPushMatrix();
@@ -1132,12 +1174,13 @@ void Peixe()
   glEnd();
   glPopMatrix();
 }
-
+// Indica se o pinguim está virado para frente
 bool PINGUIM_FRENTE()
 {
   return !tras;
 }
 
+// Verifica se o pinguim está no lago (modo frente)
 bool PINGUIM_NO_LAGO_FRENTE()
 {
   if (PINGUIM_FRENTE())
@@ -1163,6 +1206,7 @@ bool PINGUIM_NO_LAGO_FRENTE()
   return false;
 }
 
+// Verifica se o pinguim está no lago (modo trás)
 bool PINGUIM_NO_LAGO_TRAS()
 {
   if (!PINGUIM_FRENTE())
@@ -1202,6 +1246,7 @@ bool PINGUIM_NO_LAGO_TRAS()
   return false;
 }
 
+// Verifica se o pinguim está na área verde (terra)
 bool PINGUIM_NO_VERDE()
 {
   if ((-7.5 + dx * velocidade_pinguim < lago_X0 && -7.5 + dx * velocidade_pinguim >= posicao_filhote) && !pinguim_Mergulhou)
@@ -1222,6 +1267,7 @@ bool PINGUIM_NO_VERDE()
   return false;
 }
 
+// Captura o peixe se o pinguim estiver na posição correta
 void CapturaPeixe(int i)
 {
   if (!pegouPeixe && !PINGUIM_NO_VERDE())
@@ -1255,65 +1301,90 @@ double proximo_movimento_pinguim_x()
   return posicaoPinguimX + dx*velocidade_pinguim;
 }
 
+/**
+ * Função principal de renderização do jogo
+ * Responsável por desenhar todos os elementos na tela e controlar a lógica do jogo
+ */
 void display()
 {
+  // Inicializa a semente para números aleatórios baseada no tempo atual
   srand((unsigned)time(NULL));
+  
+  // Limpa o buffer de cor com a cor definida em init()
   glClear(GL_COLOR_BUFFER_BIT);
+  
+  // Configura a matriz de modelo/visualização
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
 
+  // Verifica condições principais do jogo:
+  // - Se ainda está no tempo limite (5 minutos)
+  // - Se o cronômetro do filhote não estourou (1 minuto)
+  // - Se o jogador não perdeu
   if ((frameNumber <= _5minutos) && (cronometroPinguimFilhote <= _1minuto) && !perdeu)
   {
-    // Limpa a janela, colocando na tela a cor definida pela função glClearColor
-    // QUADRADO VERDE
+    // --- DESENHO DO CENÁRIO ---
+    
+    // Desenha o quadrado verde (área segura)
     glPushMatrix();
-    glTranslated(-5, -3.5, 0);
-    glScaled(4, 3.2, 1);
-    glColor3f(0, 1, 0);
-    square();
+    glTranslated(-5, -3.5, 0);  // Posiciona
+    glScaled(4, 3.2, 1);        // Dimensiona
+    glColor3f(0, 1, 0);         // Cor verde
+    square();                   // Desenha o quadrado
     glPopMatrix();
 
-    // QUADRADO AZUL
+    // Desenha o quadrado azul (lago)
     glPushMatrix();
-    glTranslated(3, -3.5, 0);
-    glScaled(4, 3.2, 1);
-    glColor3f(0, 0, 1);
-    square();
+    glTranslated(3, -3.5, 0);   // Posiciona
+    glScaled(4, 3.2, 1);        // Dimensiona
+    glColor3f(0, 0, 1);         // Cor azul
+    square();                   // Desenha o quadrado
     glPopMatrix();
 
-    // PEIXES
+    // --- COMPORTAMENTO DOS PEIXES ---
     for (int i = 0; i < 4; i++)
     {
+      // Se o peixe foi capturado, reposiciona aleatoriamente
       if (peixeCapturado[i])
       {
+        // Define direção inicial aleatória
         peixeDirecaoInicial[i] = rand() % 2;
+        
+        // Posição aleatória dentro do lago
         peixeX[i] = ((double)rand() / RAND_MAX) * 7;
         peixeY[i] = -0.5 + ((double)rand() / RAND_MAX) * -6;
 
+        // Verifica colisão entre peixes
         bool colisao;
-        do
-        {
+        do {
           colisao = false;
-          for (int j = 3; j >= 0; j--)
-          {
+          for (int j = 3; j >= 0; j--) {
+            // Calcula limites do peixe
             double barrigaPeixe_j = peixeY[j] - 0.2;
             double costaPeixe_j = peixeY[j] + 0.2;
             barrigaPeixe = peixeY[i] - 0.2;
             costaPeixe = peixeY[i] + 0.2;
-            if ((j != i) && ((barrigaPeixe >= barrigaPeixe_j - 0.1 && barrigaPeixe <= costaPeixe_j + 0.1) || (costaPeixe >= barrigaPeixe_j - 0.1 && costaPeixe <= costaPeixe_j + 0.1)))
-            {
+            
+            // Verifica sobreposição
+            if ((j != i) && ((barrigaPeixe >= barrigaPeixe_j - 0.1 && barrigaPeixe <= costaPeixe_j + 0.1) || 
+                (costaPeixe >= barrigaPeixe_j - 0.1 && costaPeixe <= costaPeixe_j + 0.1))) {
+              // Reposiciona se houve colisão
               peixeY[i] = -0.5 + ((double)rand() / RAND_MAX) * -6;
               colisao = true;
               break;
             }
           }
         } while (colisao);
+        
+        // Desenha o peixe na nova posição
         glPushMatrix();
         glTranslated(peixeX[i], peixeY[i], 0);
         glScaled(0.2, 0.2, 1);
-        glColor3f(1, 0.549, 0);
+        glColor3f(1, 0.549, 0); // Cor laranja
         Peixe();
         glPopMatrix();
+        
+        // Reseta variáveis de controle do peixe
         posicaoPeixeX[i] = peixeX[i];
         dxPeixe[i] = 0;
         direita[i] = false;
@@ -1321,46 +1392,61 @@ void display()
         peixeCapturado[i] = false;
         peixe_virou[i] = false;
       }
-      else
+      else // Peixe não capturado - movimento normal
       {
+        // Incrementa contador de movimento
         dxPeixe[i]++;
-        if (!peixe_virou[i])
+        
+        // Movimento para esquerda (direção inicial)
+        if (!peixe_virou[i] && peixeDirecaoInicial[i] && !Troca_Direita(peixeX[i] - dxPeixe[i] * velocidade_peixe, i))
         {
-          if (peixeDirecaoInicial[i] && !Troca_Direita(peixeX[i] - dxPeixe[i] * velocidade_peixe, i))
-          {
-            posicaoPeixeX[i] = peixeX[i] - dxPeixe[i] * velocidade_peixe;
-            glPushMatrix();
-            glTranslated(posicaoPeixeX[i], peixeY[i], 0);
-            glScaled(0.2, 0.2, 1);
-            glColor3f(1, 0.549, 0);
-            Peixe();
-            glPopMatrix();
-            cabeçaPeixe = posicaoPeixeX[i] - 0.5;
-            caudaPeixe = posicaoPeixeX[i] + 0.5;
-            barrigaPeixe = peixeY[i] - 0.2;
-            costaPeixe = peixeY[i] + 0.2;
-          }
-          else if (!peixeDirecaoInicial[i] && !Troca_Esquerda(peixeX[i] + dxPeixe[i] * velocidade_peixe, i))
-          {
-            posicaoPeixeX[i] = peixeX[i] + dxPeixe[i] * velocidade_peixe;
-            glPushMatrix();
-            glTranslated(posicaoPeixeX[i], peixeY[i], 0);
-            glScaled(0.2, 0.2, 1);
-            glColor3f(1, 0.549, 0);
-            glRotated(-180, 0, 0, 1);
-            Peixe();
-            glPopMatrix();
-            cabeçaPeixe = posicaoPeixeX[i] + 0.5;
-            caudaPeixe = posicaoPeixeX[i] - 0.5;
-            barrigaPeixe = peixeY[i] - 0.2;
-            costaPeixe = peixeY[i] + 0.2;
-          }
+          // Atualiza posição
+          posicaoPeixeX[i] = peixeX[i] - dxPeixe[i] * velocidade_peixe;
+          
+          // Desenha peixe virado para esquerda
+          glPushMatrix();
+          glTranslated(posicaoPeixeX[i], peixeY[i], 0);
+          glScaled(0.2, 0.2, 1);
+          glColor3f(1, 0.549, 0);
+          Peixe();
+          glPopMatrix();
+          
+          // Atualiza limites do peixe para colisão
+          cabeçaPeixe = posicaoPeixeX[i] - 0.5;
+          caudaPeixe = posicaoPeixeX[i] + 0.5;
+          barrigaPeixe = peixeY[i] - 0.2;
+          costaPeixe = peixeY[i] + 0.2;
         }
-        else
+        // Movimento para direita (direção inicial)
+        else if (!peixe_virou[i] && !peixeDirecaoInicial[i] && !Troca_Esquerda(peixeX[i] + dxPeixe[i] * velocidade_peixe, i))
         {
+          // Atualiza posição
+          posicaoPeixeX[i] = peixeX[i] + dxPeixe[i] * velocidade_peixe;
+          
+          // Desenha peixe virado para direita (rotacionado)
+          glPushMatrix();
+          glTranslated(posicaoPeixeX[i], peixeY[i], 0);
+          glScaled(0.2, 0.2, 1);
+          glColor3f(1, 0.549, 0);
+          glRotated(-180, 0, 0, 1);
+          Peixe();
+          glPopMatrix();
+          
+          // Atualiza limites do peixe para colisão
+          cabeçaPeixe = posicaoPeixeX[i] + 0.5;
+          caudaPeixe = posicaoPeixeX[i] - 0.5;
+          barrigaPeixe = peixeY[i] - 0.2;
+          costaPeixe = peixeY[i] + 0.2;
+        }
+        // Comportamento após virar
+        else if (peixe_virou[i])
+        {
+          // Movimento para direita após virar
           if (direita[i] && !Troca_Esquerda(-0.5 + dxPeixe[i] * velocidade_peixe, i))
           {
             posicaoPeixeX[i] = -0.5 + dxPeixe[i] * velocidade_peixe;
+            
+            // Desenha peixe virado para direita
             glPushMatrix();
             glTranslated(posicaoPeixeX[i], peixeY[i], 0);
             glScaled(0.2, 0.2, 1);
@@ -1368,20 +1454,27 @@ void display()
             glRotated(-180, 0, 0, 1);
             Peixe();
             glPopMatrix();
+            
+            // Atualiza limites
             cabeçaPeixe = posicaoPeixeX[i] - 0.5;
             caudaPeixe = posicaoPeixeX[i] + 0.5;
             barrigaPeixe = peixeY[i] - 0.2;
             costaPeixe = peixeY[i] + 0.2;
           }
+          // Movimento para esquerda após virar
           else if (esquerda[i] && !Troca_Direita(6.5 - dxPeixe[i] * velocidade_peixe, i))
           {
-            posicaoPeixeX[i] = 6.5 - dxPeixe[i] * velocidade_peixe, peixeY[i], 0;
+            posicaoPeixeX[i] = 6.5 - dxPeixe[i] * velocidade_peixe;
+            
+            // Desenha peixe virado para esquerda
             glPushMatrix();
             glTranslated(posicaoPeixeX[i], peixeY[i], 0);
             glScaled(0.2, 0.2, 1);
             glColor3f(1, 0.549, 0);
             Peixe();
             glPopMatrix();
+            
+            // Atualiza limites
             cabeçaPeixe = posicaoPeixeX[i] + 0.5;
             caudaPeixe = posicaoPeixeX[i] - 0.5;
             barrigaPeixe = peixeY[i] - 0.2;
@@ -1389,24 +1482,36 @@ void display()
           }
         }
       }
+      
+      // Verifica captura do peixe
       CapturaPeixe(i);
     }
 
+    // --- COMPORTAMENTO DO PINGUIM ---
+    
+    // Pinguim na área verde (não no lago e virado para frente)
     if (!PINGUIM_NO_LAGO_TRAS() && PINGUIM_NO_VERDE())
     {
       pinguim_Mergulhou = false;
+      
+      // Atualiza posição
       posicaoPinguimX = posicao_inicial_pinguimX + dx * velocidade_pinguim;
       posicaoPinguimY = posicao_inicial_pinguimY;
+      
+      // Desenha o pinguim
       glPushMatrix();
       glTranslated(posicaoPinguimX, posicaoPinguimY, 0);
 
+      // Pinguim virado para frente
       if (PINGUIM_FRENTE())
       {
+        // Atualiza limites para colisão
         barrigaPinguim = posicaoPinguimX + 0.3;
         pataPinguim = posicaoPinguimY - 0.6;
         cabecaPinguim = posicaoPinguimY + 1.5;
         costaPinguim = posicaoPinguimX - 0.3;
 
+        // Desenha peixe na boca se capturado
         if (pegouPeixe)
         {
           glPushMatrix();
@@ -1417,18 +1522,22 @@ void display()
           Peixe();
           glPopMatrix();
         }
+        
+        // Desenha pinguim virado para direita
         glPushMatrix();
         glScaled(0.6, 0.8, 1);
         Pinguim();
         glPopMatrix();
       }
-      else
+      else // Pinguim virado para trás
       {
+        // Atualiza limites para colisão
         barrigaPinguim = posicaoPinguimX - 0.3;
         pataPinguim = posicaoPinguimY - 0.6;
         cabecaPinguim = posicaoPinguimY + 1.5;
         costaPinguim = posicaoPinguimX + 0.3;
 
+        // Desenha peixe na boca se capturado
         if (pegouPeixe)
         {
           glPushMatrix();
@@ -1440,6 +1549,7 @@ void display()
           glPopMatrix();
         }
 
+        // Desenha pinguim virado para esquerda
         glPushMatrix();
         glScaled(0.6, 0.8, 1);
         Pinguim_Contrario();
@@ -1447,9 +1557,12 @@ void display()
       }
       glPopMatrix();
     }
+    // Pinguim no lago virado para frente
     else if (PINGUIM_NO_LAGO_FRENTE())
     {
       pinguim_Mergulhou = true;
+      
+      // Atualiza posição e limites
       posicaoPinguimX = -7 + dx * velocidade_pinguim + 0.4;
       posicaoPinguimY = 0.1 + dy * velocidade_pinguim - 0.6;
       cabecaPinguim = posicaoPinguimX + 1;
@@ -1457,11 +1570,13 @@ void display()
       barrigaPinguim = posicaoPinguimY - 0.4;
       costaPinguim = posicaoPinguimY + 0.4;
 
+      // Desenha pinguim rotacionado (nadando)
       glPushMatrix();
       glTranslated(-7 + dx * velocidade_pinguim, -0.5 + dy * velocidade_pinguim, 0);
       glRotated(-90, 0, 0, 1);
       glTranslated(0, 0, 0);
 
+      // Peixe na boca se capturado
       if (pegouPeixe)
       {
         glPushMatrix();
@@ -1473,6 +1588,7 @@ void display()
         glPopMatrix();
       }
 
+      // Desenha pinguim
       glPushMatrix();
       glScaled(0.6, 0.8, 1);
       Pinguim();
@@ -1480,19 +1596,24 @@ void display()
 
       glPopMatrix();
     }
+    // Pinguim no lago virado para trás
     else
     {
+      // Atualiza posição e limites
       posicaoPinguimX = -5.6 + dx * velocidade_pinguim - 0.4;
       posicaoPinguimY = -0.5 + dy * velocidade_pinguim;
       cabecaPinguim = posicaoPinguimX - 1;
       pataPinguim = posicaoPinguimX + 1;
       barrigaPinguim = posicaoPinguimY - 0.4;
       costaPinguim = posicaoPinguimY + 0.4;
+      
+      // Desenha pinguim rotacionado (nadando virado para trás)
       glPushMatrix();
       glTranslated(-5.6 + dx * velocidade_pinguim, -0.5 + dy * velocidade_pinguim, 0);
       glRotated(90, 0, 0, 1);
       glTranslated(0, 0, 0);
 
+      // Peixe na boca se capturado
       if (pegouPeixe)
       {
         glPushMatrix();
@@ -1504,6 +1625,7 @@ void display()
         glPopMatrix();
       }
 
+      // Desenha pinguim
       glPushMatrix();
       glScaled(0.6, 0.8, 1);
       Pinguim_Contrario();
@@ -1512,36 +1634,45 @@ void display()
       glPopMatrix();
     }
 
+    // Desenha o pinguim filhote em posição fixa
     glPushMatrix();
     glTranslated(-8.5, 0.2, 0);
     Pinguim_Filhote();
     glPopMatrix();
 
+    // Verifica se o pinguim chegou ao filhote com peixe
     if (pegouPeixe && -7.5 + dx * velocidade_pinguim <= -7)
     {
+      // Incrementa contador e reseta cronômetro
       conta_peixes++;
       cronometroPinguimFilhote = 0;
       pegouPeixe = false;
     }
 
+    // --- COMPORTAMENTO DO PETREL ---
     glPushMatrix();
 
+    // Movimento padrão (não está em rasante)
     if ((!comecando_rasante() && !no_rasante))
     {
       movimento_padrao_petrel();
     }
-    else
+    else // Comportamento durante o rasante
     {
+      // Movimento para direita durante rasante
       if (!direcao_esquerda)
       {
+        // Verifica se chegou ao ponto de rasante
         if (proximo_passo_direita_x() >= ponto_rasante)
         {
+          // Verifica limites da tela
           if (proximo_passo_direita_x() <= petrel_limite_direita)
           {
+            // Atualiza posição na parábola do rasante
             posX = proximo_passo_direita_x();
             posY = rasante(a, verticeX, verticeY, posX);
           }
-          else
+          else // Chegou no limite direito
           {
             petrel_x = petrel_limite_direita;
             direcao_esquerda = true;
@@ -1553,6 +1684,8 @@ void display()
             verticeX = 0;
             verticeY = 0;
           }
+          
+          // Verifica se passou do vértice da parábola
           if (posX > verticeX && posY >= altura_rasante)
           {
             petrel_x = posX;
@@ -1563,13 +1696,14 @@ void display()
             no_rasante = false;
           }
         }
-        else
+        else // Ainda não chegou no ponto de rasante
         {
           movimento_padrao_petrel();
         }
       }
-      else
+      else // Movimento para esquerda durante rasante
       {
+        // Lógica similar ao movimento para direita, mas invertido
         if (proximo_passo_esquerda_x() <= ponto_rasante)
         {
           if (proximo_passo_esquerda_x() >= petrel_limite_esquerda)
@@ -1589,6 +1723,7 @@ void display()
             verticeX = 0;
             verticeY = 0;
           }
+          
           if (posX < verticeX && posY >= altura_rasante)
           {
             petrel_x = posX;
@@ -1605,6 +1740,8 @@ void display()
         }
       }
     }
+    
+    // Desenha o petrel na posição calculada
     glTranslated(posX, posY, 0);
     glScaled(0.8, 0.8, 1);
     petrel();
@@ -1612,103 +1749,121 @@ void display()
 
     glPopMatrix();
 
+    // Verifica se o petrel atingiu o pinguim
     if (petrel_atinge())
     {
       perdeu = true;
     }
+    
+    // Desenha a pontuação
     glPushMatrix();
     glColor3f(0,0,0);
     impreme_pontuacao();
     glPopMatrix();
+  }
+  else // Fim de jogo (derrota ou vitória)
+  {
+    // Verifica se perdeu (tempo acabou ou foi atingido)
+    if (frameNumber <= _5minutos)
+    {
+      // Desenha "PERDEU"
+      glPushMatrix();
+      glColor3f(1,1,1);
+      
+      // Letra P
+      glPushMatrix();
+      glTranslated(-2,0,0);
+      P();
+      glPopMatrix();
 
-  } else {
-    if (frameNumber <= _5minutos){
-    glPushMatrix();
-    glColor3f(1,1,1);
-    glPushMatrix();
-    glTranslated(-2,0,0);
-    P();
-    glPopMatrix();
+      // Letra E
+      glPushMatrix();
+      glTranslated(-0.9,0,0);
+      E();
+      glPopMatrix();
 
-    glColor3f(1,1,1);
-    glPushMatrix();
-    glTranslated(-0.9,0,0);
-    E();
-    glPopMatrix();
+      // Letra R
+      glPushMatrix();
+      glTranslated(0.1,0,0);
+      R();
+      glPopMatrix();
 
-    glColor3f(1,1,1);
-    glPushMatrix();
-    glTranslated(0.1,0,0);
-    R();
-    glPopMatrix();
+      // Letra D
+      glPushMatrix();
+      glTranslated(1.1,0,0);
+      D();
+      glPopMatrix();
 
-    glColor3f(1,1,1);
-    glPushMatrix();
-    glTranslated(1.1,0,0);
-    D();
-    glPopMatrix();
+      // Letra E
+      glPushMatrix();
+      glTranslated(2.1,0,0);
+      E();
+      glPopMatrix();
 
-    glColor3f(1,1,1);
-    glPushMatrix();
-    glTranslated(2.1,0,0);
-    E();
-    glPopMatrix();
-
-    glColor3f(1,1,1);
-    glPushMatrix();
-    glTranslated(3.1,0,0);
-    U();
-    glPopMatrix();
-    glPopMatrix();
+      // Letra U
+      glPushMatrix();
+      glTranslated(3.1,0,0);
+      U();
+      glPopMatrix();
+      glPopMatrix();
     }
-    else {
-    glPushMatrix();
-    glColor3f(1,1,1);
-    glPushMatrix();
-    glTranslated(-2,0,0);
-    G();
-    glPopMatrix();
+    else // Tempo completo - vitória
+    {
+      // Desenha "GANHOU"
+      glPushMatrix();
+      glColor3f(1,1,1);
+      
+      // Letra G
+      glPushMatrix();
+      glTranslated(-2,0,0);
+      G();
+      glPopMatrix();
 
-    glColor3f(1,1,1);
-    glPushMatrix();
-    glTranslated(-0.9,0,0);
-    A();
-    glPopMatrix();
+      // Letra A
+      glPushMatrix();
+      glTranslated(-0.9,0,0);
+      A();
+      glPopMatrix();
 
-    glColor3f(1,1,1);
-    glPushMatrix();
-    glTranslated(0.1,0,0);
-    N();
-    glPopMatrix();
+      // Letra N
+      glPushMatrix();
+      glTranslated(0.1,0,0);
+      N();
+      glPopMatrix();
 
-    glColor3f(1,1,1);
-    glPushMatrix();
-    glTranslated(1.3,0,0);
-    H();
-    glPopMatrix();
+      // Letra H
+      glPushMatrix();
+      glTranslated(1.3,0,0);
+      H();
+      glPopMatrix();
 
-    glColor3f(1,1,1);
-    glPushMatrix();
-    glTranslated(2.5,0,0);
-    O();
-    glPopMatrix();
+      // Letra O
+      glPushMatrix();
+      glTranslated(2.5,0,0);
+      O();
+      glPopMatrix();
 
-    glColor3f(1,1,1);
-    glPushMatrix();
-    glTranslated(3.7,0,0);
-    U();
-    glPopMatrix();
+      // Letra U
+      glPushMatrix();
+      glTranslated(3.7,0,0);
+      U();
+      glPopMatrix();
 
-    glPopMatrix();
+      glPopMatrix();
     } 
+    
+    // Desenha a pontuação final
     glPushMatrix();
     glColor3f(1,1,1);
     impreme_pontuacao();
     glPopMatrix();
-    }
+  }
+  
+  // Força o desenho na tela
   glFlush();
 }
 
+// Função chamada a cada 20ms (controle de tempo e frames)
 void Frame(int v)
 {
   frameNumber++;
