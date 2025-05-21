@@ -1616,40 +1616,10 @@ void display()
     {
       perdeu = true;
     }
-    // glPushMatrix();
-    // if (verticeX != 0 || verticeY != 0)
-    // {
-    //   glLineWidth(5);
-    //   glBegin(GL_LINES);
-    //   glColor3f(1, 0.4353, 0.6118);
-    //   for (double i = -8; i <= 8; i = i + 0.1)
-    //   {
-    //     glVertex3f(i, rasante(a, verticeX, verticeY, i), 0);
-    //   }
-    //   glEnd();
-    //   glPointSize(5);
-    //   glColor3f(1, 0, 0);
-    //   glVertex3f(ponto_rasante, petrel_y, 0);
-    //   glColor3f(1, 1, 0);
-    //   glVertex3f(ponto_rasante, altura_rasante, 0);
-    //   glEnd();
-    // }
-    // glLineWidth(5);
-    // cout << verticeY<<endl;
-    // glEnd();
-    // glPopMatrix();
-    // Libera o buffer de comando de desenho para fazer o desenho acontecer o mais rápido possível.
-    // glPushMatrix();
-    // glColor3f(0,0,0);
-    // impreme_pontuacao();
-    // glPopMatrix();
-    // glPointSize(5);
-    // glBegin(GL_POINTS);
-    // glColor3f(1, 0, 0);
-    // glVertex3f(posicao_inicial_pinguimX + dx * velocidade_pinguim,0,0);
-    // glColor3f(1, 1, 0);
-    // glVertex3f(posicaoPinguimX,0,0);
-    // glEnd();
+    glPushMatrix();
+    glColor3f(0,0,0);
+    impreme_pontuacao();
+    glPopMatrix();
 
   } else {
     if (frameNumber <= _5minutos){
